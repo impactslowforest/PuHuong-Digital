@@ -1250,10 +1250,10 @@
                 }
 
                 // 2. Load GeoJSON (with progress feedback)
-                statusEl.innerHTML = '<span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse inline-block"></span> Đang tải GeoJSON (188 MB)...';
+                statusEl.innerHTML = '<span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse inline-block"></span> Đang tải GeoJSON (87 MB)...';
                 document.getElementById('gis-load-pct').textContent = 'Đang tải, vui lòng chờ...';
 
-                const resp = await fetch(VPS + '/PuHuong-GIS.geojson');
+                const resp = await fetch(VPS + '/PuHuong-GIS-web.geojson');
                 const total = parseInt(resp.headers.get('Content-Length') || '0');
                 const reader = resp.body.getReader();
                 let received = 0, chunks = [];
@@ -1264,7 +1264,7 @@
                     received += value.length;
                     if (total) {
                         const pct = Math.round(received / total * 100);
-                        document.getElementById('gis-load-pct').textContent = `${pct}% (${(received / 1048576).toFixed(1)} / ${(total / 1048576).toFixed(0)} MB)`;
+                        document.getElementById('gis-load-pct').textContent = `${pct}% — ${(received / 1048576).toFixed(0)}/${(total / 1048576).toFixed(0)} MB`;
                     }
                 }
                 const text = new TextDecoder().decode(new Uint8Array(chunks.reduce((a, c) => [...a, ...c], [])));
@@ -1292,18 +1292,23 @@
                         const info = _gisColors[vt] || {};
                         const dot = `<span style="display:inline-block;width:12px;height:12px;background:${info.color || '#aaa'};border-radius:3px;margin-right:4px;vertical-align:middle;"></span>`;
                         layer.bindPopup(`
-                            <div style="min-width:200px;font-family:Inter,sans-serif;font-size:12px;">
+                            <div style="min-width:210px;font-family:Inter,sans-serif;font-size:12px;">
                                 <p style="font-weight:800;font-size:13px;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:4px;">${dot}${vt}</p>
-                                <p style="color:#555;margin-bottom:3px;">${info.label || p.LDLR || ''}</p>
+                                <p style="color:#555;margin-bottom:5px;font-size:11px;">${info.label || p.LDLR || ''}</p>
                                 <table style="width:100%;font-size:11px;border-collapse:collapse;">
-                                    <tr><td style="color:#888;padding:2px 0;">Diện tích</td><td style="font-weight:600;text-align:right;">${p.DT_HA ? p.DT_HA.toFixed(2) + ' ha' : 'N/A'}</td></tr>
-                                    <tr><td style="color:#888;padding:2px 0;">Chủ rừng</td><td style="font-weight:600;text-align:right;">${p.CHURUNG || p.CHUQUAN || 'N/A'}</td></tr>
-                                    <tr><td style="color:#888;padding:2px 0;">Tỉnh</td><td style="font-weight:600;text-align:right;">${p.TINH || 'N/A'}</td></tr>
-                                    <tr><td style="color:#888;padding:2px 0;">Huyện</td><td style="font-weight:600;text-align:right;">${p.HUYEN || 'N/A'}</td></tr>
-                                    <tr><td style="color:#888;padding:2px 0;">Xã</td><td style="font-weight:600;text-align:right;">${p.XA || 'N/A'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Tỉnh</td><td style="font-weight:600;text-align:right;">${p.TINH || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Xã</td><td style="font-weight:600;text-align:right;">${p.XA || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Tiểu khu</td><td style="font-weight:600;text-align:right;">${p.TIEUKHU || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Khoảnh</td><td style="font-weight:600;text-align:right;">${p.KHOANH || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Lô</td><td style="font-weight:600;text-align:right;">${p.MALO || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Diện tích</td><td style="font-weight:600;text-align:right;">${p.DTICH != null ? Number(p.DTICH).toFixed(2) + ' ha' : '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Chủ rừng</td><td style="font-weight:600;text-align:right;">${p.CHURUNG || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Tên chủ rừng</td><td style="font-weight:600;text-align:right;">${p.TENCR || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Đối tượng</td><td style="font-weight:600;text-align:right;">${p.DTUONG || '—'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Mã LR3</td><td style="font-weight:600;text-align:right;">${p.MALR3 || '—'}</td></tr>
                                 </table>
                             </div>
-                        `, { maxWidth: 260 });
+                        `, { maxWidth: 280 });
                         layer.on('mouseover', function () { this.setStyle({ weight: 2, color: '#ffff00', fillOpacity: 0.9 }); });
                         layer.on('mouseout', function () { _gisLayer.resetStyle(this); });
                     }
