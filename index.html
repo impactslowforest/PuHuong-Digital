@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet for GIS Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -314,6 +317,9 @@
                 <button onclick="switchMain('demo')" id="tab-demo"
                     class="py-5 md:py-7 px-2 text-gray-400 hover:text-green-600 transition-all text-xs md:text-sm font-semibold">II.
                     DEMO ỨNG DỤNG</button>
+                <button onclick="switchMain('gis')" id="tab-gis"
+                    class="py-5 md:py-7 px-2 text-gray-400 hover:text-green-600 transition-all text-xs md:text-sm font-semibold">III.
+                    BẢN ĐỒ GIS</button>
             </nav>
             <div class="hidden lg:block text-right border-l pl-6 border-gray-100">
                 <p class="text-xs font-bold text-gray-800">Tư vấn: Lộc Vũ Trung</p>
@@ -548,6 +554,53 @@
         </section>
 
     </div><!-- end sec-report -->
+
+    <!-- ==================== SECTION III: GIS MAP ==================== -->
+    <div id="sec-gis" class="hidden" style="height:calc(100vh - 64px); display:flex; flex-direction:column;">
+        <!-- Toolbar -->
+        <div class="bg-white border-b px-4 py-2 flex items-center justify-between shrink-0 z-10">
+            <div class="flex items-center gap-3">
+                <div class="p-1.5 bg-green-600 rounded-lg text-white"><i data-lucide="map" class="w-4 h-4"></i></div>
+                <div>
+                    <p class="text-sm font-bold text-slate-800">Bản đồ trạng thái rừng - Khu Bảo Tồn Thiên Nhiên Pù
+                        Huống</p>
+                    <p class="text-[10px] text-gray-400">Nguồn: Kiểm kê rừng tỉnh Nghệ An | Hệ tọa độ WGS84</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div id="gis-status" class="text-[10px] text-gray-500 flex items-center gap-1">
+                    <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse inline-block"></span> Chưa tải dữ liệu
+                </div>
+                <button type="button" onclick="reloadGISLayer()"
+                    class="text-[10px] bg-green-50 text-green-700 border border-green-200 px-3 py-1.5 rounded-lg font-medium hover:bg-green-100 flex items-center gap-1">
+                    <i data-lucide="layers" class="w-3 h-3"></i> Tải lớp GIS
+                </button>
+            </div>
+        </div>
+        <!-- Map container -->
+        <div class="relative flex-1">
+            <div id="gis-map" style="height:100%;width:100%;"></div>
+            <!-- Legend -->
+            <div id="gis-legend"
+                class="absolute bottom-8 right-3 z-[999] bg-white/95 backdrop-blur rounded-xl shadow-xl border border-gray-200 p-3"
+                style="max-height:45vh;width:210px;overflow-y:auto;display:none;">
+                <p class="text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2">Chú giải LDLR_VT</p>
+                <div id="gis-legend-items" class="space-y-1"></div>
+            </div>
+            <!-- Loading overlay -->
+            <div id="gis-loading"
+                class="absolute inset-0 bg-slate-900/60 flex flex-col items-center justify-center z-[1000]"
+                style="display:none!important">
+                <div class="bg-white rounded-2xl p-6 text-center shadow-2xl">
+                    <div
+                        class="w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-3">
+                    </div>
+                    <p class="font-bold text-slate-700 text-sm">Đang tải dữ liệu GIS...</p>
+                    <p id="gis-load-pct" class="text-xs text-gray-400 mt-1">Vui lòng chờ (188 MB)</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== SECTION II: DEMO APP ==================== -->
     <div id="sec-demo" class="hidden" style="height:calc(100vh - 64px)">
@@ -1098,11 +1151,26 @@
 
         // ========== NAVIGATION ==========
         function switchMain(tab) {
-            const r = document.getElementById('sec-report'), d = document.getElementById('sec-demo'),
-                rb = document.getElementById('tab-report'), db = document.getElementById('tab-demo'),
+            const r = document.getElementById('sec-report'),
+                d = document.getElementById('sec-demo'),
+                g = document.getElementById('sec-gis'),
+                rb = document.getElementById('tab-report'),
+                db = document.getElementById('tab-demo'),
+                gb = document.getElementById('tab-gis'),
                 f = document.getElementById('global-footer');
-            if (tab === 'report') { r.classList.remove('hidden'); d.classList.add('hidden'); rb.classList.add('tab-active'); rb.classList.remove('text-gray-400'); db.classList.remove('tab-active'); db.classList.add('text-gray-400'); f.classList.remove('hidden') }
-            else { r.classList.add('hidden'); d.classList.remove('hidden'); db.classList.add('tab-active'); db.classList.remove('text-gray-400'); rb.classList.remove('tab-active'); rb.classList.add('text-gray-400'); f.classList.add('hidden'); if (!document.getElementById('demo-main').innerHTML) showTab('dashboard', document.querySelector('.sidebar-item.active')) }
+            // Hide all
+            r.classList.add('hidden'); d.classList.add('hidden'); g.classList.add('hidden');
+            [rb, db, gb].forEach(b => { b.classList.remove('tab-active'); b.classList.add('text-gray-400'); });
+            f.classList.add('hidden');
+            if (tab === 'report') {
+                r.classList.remove('hidden'); rb.classList.add('tab-active'); rb.classList.remove('text-gray-400'); f.classList.remove('hidden');
+            } else if (tab === 'demo') {
+                d.classList.remove('hidden'); db.classList.add('tab-active'); db.classList.remove('text-gray-400');
+                if (!document.getElementById('demo-main').innerHTML) showTab('dashboard', document.querySelector('.sidebar-item.active'));
+            } else if (tab === 'gis') {
+                g.classList.remove('hidden'); gb.classList.add('tab-active'); gb.classList.remove('text-gray-400');
+                setTimeout(initGISMap, 100);
+            }
             lucide.createIcons();
         }
 
@@ -1133,6 +1201,145 @@
                 box.innerHTML += `<div class="flex gap-3 flex-row-reverse"><div class="w-9 h-9 bg-green-600 text-white rounded-xl shrink-0 flex items-center justify-center font-bold text-[10px] shadow">AI</div><div class="bg-green-50 p-4 rounded-2xl rounded-tr-none text-sm border border-green-100 max-w-[80%] leading-relaxed">${answers['default']}</div></div>`;
                 box.scrollTop = box.scrollHeight; lucide.createIcons();
             }, 800);
+        }
+
+        // ========== GIS MAP ==========
+        let _gisMap = null;
+        let _gisLayer = null;
+        let _gisColors = null;
+        let _gisLoaded = false;
+
+        async function initGISMap() {
+            if (_gisMap) { _gisMap.invalidateSize(); return; }
+            // Init Leaflet map
+            _gisMap = L.map('gis-map', { zoomControl: true, attributionControl: true });
+            _gisMap.setView([19.25, 104.75], 10);
+
+            // ESRI Satellite basemap
+            L.tileLayer(
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                {
+                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, GeoEye, Earthstar Geographics',
+                    maxZoom: 18
+                }
+            ).addTo(_gisMap);
+
+            // ESRI label overlay (roads/place names)
+            L.tileLayer(
+                'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+                { maxZoom: 18, opacity: 0.7 }
+            ).addTo(_gisMap);
+        }
+
+        async function reloadGISLayer() {
+            if (!_gisMap) await initGISMap();
+
+            const VPS = 'http://36.50.26.99:8097';
+            const statusEl = document.getElementById('gis-status');
+            const loadingEl = document.getElementById('gis-loading');
+
+            // Show loading
+            loadingEl.style.display = 'flex';
+            statusEl.innerHTML = '<span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse inline-block"></span> Đang tải màu sắc...';
+
+            try {
+                // 1. Load color map
+                if (!_gisColors) {
+                    const r = await fetch(VPS + '/ldlr-colors.json');
+                    _gisColors = await r.json();
+                }
+
+                // 2. Load GeoJSON (with progress feedback)
+                statusEl.innerHTML = '<span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse inline-block"></span> Đang tải GeoJSON (188 MB)...';
+                document.getElementById('gis-load-pct').textContent = 'Đang tải, vui lòng chờ...';
+
+                const resp = await fetch(VPS + '/PuHuong-GIS.geojson');
+                const total = parseInt(resp.headers.get('Content-Length') || '0');
+                const reader = resp.body.getReader();
+                let received = 0, chunks = [];
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                    received += value.length;
+                    if (total) {
+                        const pct = Math.round(received / total * 100);
+                        document.getElementById('gis-load-pct').textContent = `${pct}% (${(received / 1048576).toFixed(1)} / ${(total / 1048576).toFixed(0)} MB)`;
+                    }
+                }
+                const text = new TextDecoder().decode(new Uint8Array(chunks.reduce((a, c) => [...a, ...c], [])));
+                const geojson = JSON.parse(text);
+
+                // 3. Remove old layer
+                if (_gisLayer) _gisMap.removeLayer(_gisLayer);
+
+                // 4. Add styled GeoJSON
+                _gisLayer = L.geoJSON(geojson, {
+                    style: f => {
+                        const vt = f.properties.LDLR_VT || '';
+                        const info = _gisColors[vt] || {};
+                        return {
+                            fillColor: info.color || '#aaaaaa',
+                            fillOpacity: 0.75,
+                            color: '#ffffff',
+                            weight: 0.3,
+                            opacity: 0.6
+                        };
+                    },
+                    onEachFeature: (f, layer) => {
+                        const p = f.properties;
+                        const vt = p.LDLR_VT || '?';
+                        const info = _gisColors[vt] || {};
+                        const dot = `<span style="display:inline-block;width:12px;height:12px;background:${info.color || '#aaa'};border-radius:3px;margin-right:4px;vertical-align:middle;"></span>`;
+                        layer.bindPopup(`
+                            <div style="min-width:200px;font-family:Inter,sans-serif;font-size:12px;">
+                                <p style="font-weight:800;font-size:13px;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:4px;">${dot}${vt}</p>
+                                <p style="color:#555;margin-bottom:3px;">${info.label || p.LDLR || ''}</p>
+                                <table style="width:100%;font-size:11px;border-collapse:collapse;">
+                                    <tr><td style="color:#888;padding:2px 0;">Diện tích</td><td style="font-weight:600;text-align:right;">${p.DT_HA ? p.DT_HA.toFixed(2) + ' ha' : 'N/A'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Chủ rừng</td><td style="font-weight:600;text-align:right;">${p.CHURUNG || p.CHUQUAN || 'N/A'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Tỉnh</td><td style="font-weight:600;text-align:right;">${p.TINH || 'N/A'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Huyện</td><td style="font-weight:600;text-align:right;">${p.HUYEN || 'N/A'}</td></tr>
+                                    <tr><td style="color:#888;padding:2px 0;">Xã</td><td style="font-weight:600;text-align:right;">${p.XA || 'N/A'}</td></tr>
+                                </table>
+                            </div>
+                        `, { maxWidth: 260 });
+                        layer.on('mouseover', function () { this.setStyle({ weight: 2, color: '#ffff00', fillOpacity: 0.9 }); });
+                        layer.on('mouseout', function () { _gisLayer.resetStyle(this); });
+                    }
+                }).addTo(_gisMap);
+
+                // Fly to bounds
+                _gisMap.flyToBounds(_gisLayer.getBounds(), { padding: [20, 20], duration: 1.2 });
+
+                // 5. Build legend
+                const legendEl = document.getElementById('gis-legend');
+                const legendItems = document.getElementById('gis-legend-items');
+                const seen = {};
+                geojson.features.forEach(f => {
+                    const vt = f.properties.LDLR_VT;
+                    if (vt && !seen[vt]) { seen[vt] = true; }
+                });
+                legendItems.innerHTML = Object.keys(seen).sort().map(vt => {
+                    const info = _gisColors[vt] || {};
+                    return `<div style="display:flex;align-items:center;gap:5px;padding:2px 0;">
+                        <span style="width:14px;height:14px;background:${info.color || '#aaa'};border-radius:3px;flex-shrink:0;border:1px solid rgba(0,0,0,.15);"></span>
+                        <span style="font-size:10px;font-weight:600;color:#374151;">${vt}</span>
+                        <span style="font-size:9px;color:#9ca3af;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${info.label || ''}</span>
+                    </div>`;
+                }).join('');
+                legendEl.style.display = 'block';
+
+                // 6. Update status
+                const count = geojson.features.length;
+                statusEl.innerHTML = `<span class="w-2 h-2 bg-green-500 rounded-full inline-block"></span> Đã tải ${count.toLocaleString()} feature`;
+                _gisLoaded = true;
+            } catch (err) {
+                statusEl.innerHTML = `<span class="w-2 h-2 bg-red-500 rounded-full inline-block"></span> Lỗi: ${err.message}`;
+                console.error('GIS load error:', err);
+            } finally {
+                loadingEl.style.display = 'none';
+            }
         }
 
         // Init
