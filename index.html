@@ -1,326 +1,757 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dự Án Quản Trị Số - BQL Khu Bảo Tồn Thiên Nhiên Pù Huống</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
-        .tab-active{border-bottom:3px solid #16a34a;color:#16a34a;font-weight:700}
-        .forest-grad{background:linear-gradient(135deg,#16a34a 0%,#065f46 100%)}
-        .dark-grad{background:linear-gradient(160deg,#064e3b 0%,#065f46 30%,#166534 60%,#15803d 100%)}
-        .sidebar-item{transition:all .2s;cursor:pointer}
-        .sidebar-item:hover{background:#f0fdf4;color:#16a34a;transform:translateX(4px)}
-        .sidebar-item.active{background:#16a34a;color:#fff;box-shadow:0 4px 12px rgba(22,163,74,.25)}
-        .card-h:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,.06)}
-        .glass{background:rgba(255,255,255,.85);backdrop-filter:blur(12px)}
-        @keyframes pulse-s{0%,100%{opacity:1}50%{opacity:.4}}
-        .scan{animation:pulse-s 2s infinite}
-        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-        .float{animation:float 3s ease-in-out infinite}
-        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .slide-up{animation:slideUp .5s ease-out}
-        .feat-card{transition:all .3s}
-        .feat-card:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,.08);border-color:#16a34a}
-        ::-webkit-scrollbar{width:6px}
-        ::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:8px}
-        .sidebar-scroll::-webkit-scrollbar{width:4px}
-        .timeline-dot::before{content:'';position:absolute;left:-28px;top:6px;width:12px;height:12px;border-radius:50%;background:#16a34a;border:3px solid #dcfce7}
-        .counter{font-variant-numeric:tabular-nums}
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth
+        }
+
+        .tab-active {
+            border-bottom: 3px solid #16a34a;
+            color: #16a34a;
+            font-weight: 700
+        }
+
+        .forest-grad {
+            background: linear-gradient(135deg, #16a34a 0%, #065f46 100%)
+        }
+
+        .dark-grad {
+            background: linear-gradient(160deg, #064e3b 0%, #065f46 30%, #166534 60%, #15803d 100%)
+        }
+
+        .sidebar-item {
+            transition: all .2s;
+            cursor: pointer
+        }
+
+        .sidebar-item:hover {
+            background: #f0fdf4;
+            color: #16a34a;
+            transform: translateX(4px)
+        }
+
+        .sidebar-item.active {
+            background: #16a34a;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, .25)
+        }
+
+        .card-h:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, .06)
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, .85);
+            backdrop-filter: blur(12px)
+        }
+
+        @keyframes pulse-s {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        .scan {
+            animation: pulse-s 2s infinite
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-8px)
+            }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .slide-up {
+            animation: slideUp .5s ease-out
+        }
+
+        .feat-card {
+            transition: all .3s
+        }
+
+        .feat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, .08);
+            border-color: #16a34a
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 8px
+        }
+
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #16a34a;
+            border: 3px solid #dcfce7
+        }
+
+        .counter {
+            font-variant-numeric: tabular-nums
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        /* Sidebar drawer mobile */
+        @media (max-width:1023px) {
+            #demo-sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 100;
+                transform: translateX(-100%);
+                transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+                box-shadow: 4px 0 24px rgba(0, 0, 0, .15);
+            }
+
+            #demo-sidebar.sidebar-open {
+                transform: translateX(0);
+            }
+
+            #demo-main-wrap {
+                width: 100% !important;
+            }
+        }
+
+        /* Backdrop overlay */
+        #sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 99;
+            backdrop-filter: blur(2px);
+        }
+
+        #sidebar-backdrop.show {
+            display: block;
+        }
+
+        /* Mobile top bar in demo */
+        #demo-mobile-bar {
+            display: none;
+        }
+
+        @media (max-width:1023px) {
+            #demo-mobile-bar {
+                display: flex;
+            }
+
+            #demo-sidebar {
+                padding-top: 0;
+            }
+
+            /* Adjust demo height on mobile */
+            #sec-demo {
+                height: 100dvh !important;
+            }
+        }
+
+        /* Mobile bottom nav */
+        #mobile-bottom-nav {
+            display: none;
+        }
+
+        @media (max-width:1023px) {
+            #mobile-bottom-nav {
+                display: flex;
+            }
+
+            /* push main content up so bottom nav doesn't cover it */
+            #demo-main {
+                padding-bottom: 72px;
+            }
+        }
+
+        /* ===== SECTION I + DEMO - MOBILE FINE-TUNING ===== */
+        @media (max-width:767px) {
+
+            /* Demo content pages - padding nhỏ hơn */
+            #demo-main .p-6 {
+                padding: 1rem !important;
+            }
+
+            /* Table wrap scroll ngang */
+            .overflow-hidden table,
+            #demo-main table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+            }
+
+            /* Section I cards - padding nhỏ */
+            #sec-report .p-6 {
+                padding: 1rem !important;
+            }
+
+            /* Section I hero padding mobile */
+            #sec-report section:first-child>div {
+                padding-top: 3.5rem;
+                padding-bottom: 3.5rem;
+            }
+
+            /* Stat badges wrappable */
+            #sec-report .flex.flex-wrap {
+                gap: 0.375rem;
+            }
+
+            #sec-report .flex.flex-wrap>div {
+                flex: 1 1 calc(50% - 0.2rem);
+                min-width: 0;
+            }
+
+            /* Table bảng ngân sách */
+            #sec-report table {
+                font-size: 0.7rem;
+            }
+
+            #sec-report table td,
+            #sec-report table th {
+                padding: 0.6rem !important;
+            }
+        }
+
+        @media (max-width:479px) {
+
+            /* Header navigation tabs on very small screens */
+            header nav button {
+                font-size: 0.65rem !important;
+                padding-left: 0.4rem !important;
+                padding-right: 0.4rem !important;
+            }
+
+            /* Module grid card */
+            #module-grid>div {
+                padding: 0.625rem !important;
+                gap: 0.5rem !important;
+            }
+
+            #module-grid span {
+                font-size: 0.6rem !important;
+            }
+
+            #module-grid .w-10 {
+                width: 2rem !important;
+                height: 2rem !important;
+            }
+        }
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900">
 
-<!-- HEADER -->
-<header class="bg-white/90 border-b sticky top-0 z-50 glass">
-    <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <div class="p-2 bg-green-600 rounded-xl text-white shadow-lg shadow-green-200">
-                <i data-lucide="trees" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h1 class="font-black text-base md:text-lg leading-none text-green-800 tracking-tight">PÙ HUỐNG DIGITAL</h1>
-                <p class="text-[9px] text-gray-400 uppercase tracking-[.2em] mt-0.5">Hệ thống quản trị số 4.0</p>
-            </div>
-        </div>
-        <nav class="flex gap-2 md:gap-6">
-            <button onclick="switchMain('report')" id="tab-report" class="py-5 md:py-7 px-2 tab-active transition-all text-xs md:text-sm font-semibold">I. THUYẾT MINH</button>
-            <button onclick="switchMain('demo')" id="tab-demo" class="py-5 md:py-7 px-2 text-gray-400 hover:text-green-600 transition-all text-xs md:text-sm font-semibold">II. DEMO ỨNG DỤNG</button>
-        </nav>
-        <div class="hidden lg:block text-right border-l pl-6 border-gray-100">
-            <p class="text-xs font-bold text-gray-800">Tư vấn: Lộc Vũ Trung</p>
-            <p class="text-[10px] text-green-600 font-medium">GIS & Quản lý rừng bền vững</p>
-        </div>
-    </div>
-</header>
-
-<!-- ==================== SECTION I: THUYẾT MINH ==================== -->
-<div id="sec-report">
-
-<!-- HERO -->
-<section class="dark-grad text-white relative overflow-hidden">
-    <!-- Ảnh rừng xanh tươi nền -->
-    <div class="absolute inset-0">
-        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1600" class="w-full h-full object-cover opacity-40">
-        <!-- Overlay xanh lá nhẹ để cây cối xanh tươi -->
-        <div class="absolute inset-0" style="background:linear-gradient(160deg,rgba(6,78,59,0.72) 0%,rgba(22,101,52,0.55) 50%,rgba(21,128,61,0.45) 100%)"></div>
-    </div>
-    <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
-        <div class="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 mb-6 text-xs font-semibold backdrop-blur-sm">
-            <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span> Dự án đang triển khai 2025
-        </div>
-        <h2 class="text-3xl md:text-5xl font-black mb-6 leading-tight max-w-3xl">Số hóa toàn diện<br>công tác quản lý<br><span class="text-green-300">Khu Bảo Tồn Thiên Nhiên Pù Huống</span></h2>
-        <p class="text-green-100/90 max-w-2xl leading-relaxed mb-8">
-            Xây dựng hệ thống quản trị hồ sơ tập trung, kết hợp công nghệ GIS, AI và SMART Patrol để hiện đại hóa toàn bộ công tác lâm sinh, hành chính và bảo tồn đa dạng sinh học tại Pù Huống, Nghệ An.
-        </p>
-        <div class="flex flex-wrap gap-3">
-            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-300">40,128</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Ha diện tích</p>
-            </div>
-            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-300">19+</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Module phần mềm</p>
-            </div>
-            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-300">124</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Cán bộ CNV</p>
-            </div>
-            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-300">AI</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Tích hợp trợ lý</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- MỤC TIÊU -->
-<section class="max-w-6xl mx-auto px-6 py-16">
-    <div class="text-center mb-12">
-        <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Tầm nhìn & Chiến lược</p>
-        <h3 class="text-2xl md:text-3xl font-black text-slate-800">Mục tiêu cốt lõi của dự án</h3>
-    </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
-            <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-4"><i data-lucide="file-check" class="w-6 h-6"></i></div>
-            <h4 class="font-bold mb-2">Số hóa 100%</h4>
-            <p class="text-sm text-gray-500">Toàn bộ hồ sơ, công văn và dữ liệu lâm sinh được lưu trữ điện tử.</p>
-        </div>
-        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4"><i data-lucide="map-pin" class="w-6 h-6"></i></div>
-            <h4 class="font-bold mb-2">GIS & SMART</h4>
-            <p class="text-sm text-gray-500">Giám sát rừng qua bản đồ GIS, tích hợp SMART Patrol và bẫy ảnh.</p>
-        </div>
-        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
-            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-4"><i data-lucide="bot" class="w-6 h-6"></i></div>
-            <h4 class="font-bold mb-2">AI Trợ lý</h4>
-            <p class="text-sm text-gray-500">Tra cứu nhanh luật lâm nghiệp, quy định nội bộ bằng trí tuệ nhân tạo.</p>
-        </div>
-        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
-            <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4"><i data-lucide="wifi-off" class="w-6 h-6"></i></div>
-            <h4 class="font-bold mb-2">Online & Offline</h4>
-            <p class="text-sm text-gray-500">Hoạt động cả khi mất kết nối tại các trạm kiểm lâm vùng sâu.</p>
-        </div>
-    </div>
-</section>
-
-<!-- 19 MODULE -->
-<section class="bg-white py-16 border-y border-gray-100">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-12">
-            <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Kiến trúc hệ thống</p>
-            <h3 class="text-2xl md:text-3xl font-black text-slate-800">19 Module chức năng</h3>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="module-grid"></div>
-    </div>
-</section>
-
-<!-- NGÂN SÁCH -->
-<section class="max-w-6xl mx-auto px-6 py-16">
-    <div class="grid lg:grid-cols-2 gap-10">
-        <div>
-            <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Tài chính</p>
-            <h3 class="text-2xl font-black text-slate-800 mb-6">Dự toán ngân sách 3 năm</h3>
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                <table class="w-full text-sm">
-                    <thead class="bg-slate-50 border-b"><tr><th class="p-4 text-left font-bold text-gray-600">Hạng mục</th><th class="p-4 text-right font-bold text-gray-600">Chi phí</th></tr></thead>
-                    <tbody class="divide-y divide-gray-50">
-                        <tr><td class="p-4 flex items-center gap-2"><i data-lucide="server" class="w-4 h-4 text-blue-500"></i> Hạ tầng VPS (3 năm)</td><td class="p-4 text-right font-semibold">3.000.000đ</td></tr>
-                        <tr><td class="p-4 flex items-center gap-2"><i data-lucide="cloud" class="w-4 h-4 text-sky-500"></i> Google Workspace 2TB (3 năm)</td><td class="p-4 text-right font-semibold">6.000.000đ</td></tr>
-                        <tr><td class="p-4 flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4 text-green-500"></i> Tên miền (600k/năm × 3)</td><td class="p-4 text-right font-semibold">1.800.000đ</td></tr>
-                        <tr><td class="p-4 flex items-center gap-2"><i data-lucide="cpu" class="w-4 h-4 text-purple-500"></i> API AI Token (3 năm)</td><td class="p-4 text-right font-semibold">3.000.000đ</td></tr>
-                        <tr class="bg-green-50"><td class="p-4 flex items-center gap-2 font-bold text-green-700"><i data-lucide="code" class="w-4 h-4"></i> Phát triển PM & Vận hành (2 tháng)</td><td class="p-4 text-right font-bold text-green-700">60.000.000đ</td></tr>
-                    </tbody>
-                    <tfoot class="bg-slate-900 text-white"><tr><td class="p-4 font-bold">TỔNG CỘNG</td><td class="p-4 text-right text-lg font-black text-green-400">73.800.000đ</td></tr></tfoot>
-                </table>
-            </div>
-        </div>
-        <div>
-            <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Lộ trình</p>
-            <h3 class="text-2xl font-black text-slate-800 mb-6">Timeline triển khai (8 tuần)</h3>
-            <div class="space-y-0 border-l-2 border-green-200 ml-4">
-                <div class="relative pl-8 pb-6 timeline-dot"><p class="text-xs font-bold text-green-600">Tuần 1-2</p><p class="font-bold text-sm">Khảo sát & Thiết kế hệ thống</p><p class="text-xs text-gray-500">Thu thập yêu cầu, thiết kế CSDL, UI/UX prototype</p></div>
-                <div class="relative pl-8 pb-6 timeline-dot"><p class="text-xs font-bold text-green-600">Tuần 3-4</p><p class="font-bold text-sm">Phát triển Module lõi</p><p class="text-xs text-gray-500">Nhân sự, Công văn, Kho, Xăng dầu, Nhà bếp, Lương</p></div>
-                <div class="relative pl-8 pb-6 timeline-dot"><p class="text-xs font-bold text-green-600">Tuần 5-6</p><p class="font-bold text-sm">Module chuyên sâu</p><p class="text-xs text-gray-500">GIS, SMART Patrol, Bio-Database, AI, Rừng trồng</p></div>
-                <div class="relative pl-8 pb-6 timeline-dot"><p class="text-xs font-bold text-green-600">Tuần 7</p><p class="font-bold text-sm">Tích hợp & Vùng đệm</p><p class="text-xs text-gray-500">Du lịch giáo dục, Community, Tin tức, Phân quyền</p></div>
-                <div class="relative pl-8 timeline-dot"><p class="text-xs font-bold text-green-600">Tuần 8</p><p class="font-bold text-sm">Testing & Go-live</p><p class="text-xs text-gray-500">UAT, đào tạo cán bộ, triển khai chính thức</p></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CÔNG NGHỆ -->
-<section class="bg-slate-900 text-white py-16">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-10">
-            <p class="text-xs font-bold text-green-400 uppercase tracking-widest mb-2">Nền tảng</p>
-            <h3 class="text-2xl font-black">Công nghệ sử dụng</h3>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-center">
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl mb-1">🌐</p><p class="text-xs font-bold">HTML/CSS/JS</p><p class="text-[10px] text-gray-400">Frontend</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl mb-1">⚡</p><p class="text-xs font-bold">Node.js</p><p class="text-[10px] text-gray-400">Backend</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl mb-1">🗄️</p><p class="text-xs font-bold">PostgreSQL</p><p class="text-[10px] text-gray-400">Database</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl mb-1">🗺️</p><p class="text-xs font-bold">Leaflet GIS</p><p class="text-[10px] text-gray-400">Bản đồ</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl mb-1">🤖</p><p class="text-xs font-bold">Claude AI</p><p class="text-[10px] text-gray-400">Trợ lý AI</p></div>
-            <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><p class="text-2xl mb-1">☁️</p><p class="text-xs font-bold">VPS Linux</p><p class="text-[10px] text-gray-400">Hosting</p></div>
-        </div>
-    </div>
-</section>
-
-</div><!-- end sec-report -->
-
-<!-- ==================== SECTION II: DEMO APP ==================== -->
-<div id="sec-demo" class="hidden" style="height:calc(100vh - 64px)">
-    <div class="flex h-full">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-slate-50 border-r flex flex-col shrink-0 overflow-hidden">
-            <div class="p-4 border-b border-gray-200 bg-white">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-green-600 rounded-lg text-white flex items-center justify-center"><i data-lucide="trees" class="w-4 h-4"></i></div>
-                    <div><p class="text-xs font-black text-green-800 leading-none">PÙ HUỐNG</p><p class="text-[9px] text-gray-400">v2.0 Demo</p></div>
+    <!-- HEADER -->
+    <header class="bg-white/90 border-b sticky top-0 z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-green-600 rounded-xl text-white shadow-lg shadow-green-200">
+                    <i data-lucide="trees" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-base md:text-lg leading-none text-green-800 tracking-tight">PÙ HUỐNG
+                        DIGITAL</h1>
+                    <p class="text-[9px] text-gray-400 uppercase tracking-[.2em] mt-0.5">Hệ thống quản trị số 4.0</p>
                 </div>
             </div>
-            <nav class="flex-1 overflow-y-auto sidebar-scroll p-3 space-y-0.5" id="sidebar-nav"></nav>
-            <div class="p-3 border-t bg-white">
-                <div class="flex items-center gap-2 p-2">
-                    <div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-[10px]">LVT</div>
-                    <div class="overflow-hidden flex-1"><p class="text-[11px] font-bold truncate">Lộc Vũ Trung</p><p class="text-[9px] text-gray-400">Admin</p></div>
-                    <button class="text-gray-300 hover:text-red-500"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
+            <nav class="flex gap-2 md:gap-6">
+                <button onclick="switchMain('report')" id="tab-report"
+                    class="py-5 md:py-7 px-2 tab-active transition-all text-xs md:text-sm font-semibold">I. THUYẾT
+                    MINH</button>
+                <button onclick="switchMain('demo')" id="tab-demo"
+                    class="py-5 md:py-7 px-2 text-gray-400 hover:text-green-600 transition-all text-xs md:text-sm font-semibold">II.
+                    DEMO ỨNG DỤNG</button>
+            </nav>
+            <div class="hidden lg:block text-right border-l pl-6 border-gray-100">
+                <p class="text-xs font-bold text-gray-800">Tư vấn: Lộc Vũ Trung</p>
+                <p class="text-[10px] text-green-600 font-medium">GIS & Quản lý rừng bền vững</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== SECTION I: THUYẾT MINH ==================== -->
+    <div id="sec-report">
+
+        <!-- HERO -->
+        <section class="dark-grad text-white relative overflow-hidden">
+            <!-- Ảnh rừng xanh tươi nền -->
+            <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1600"
+                    class="w-full h-full object-cover opacity-40">
+                <!-- Overlay xanh lá nhẹ để cây cối xanh tươi -->
+                <div class="absolute inset-0"
+                    style="background:linear-gradient(160deg,rgba(6,78,59,0.72) 0%,rgba(22,101,52,0.55) 50%,rgba(21,128,61,0.45) 100%)">
                 </div>
             </div>
-        </aside>
+            <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
+                <div
+                    class="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 mb-6 text-xs font-semibold backdrop-blur-sm">
+                    <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span> Dự án đang triển khai 2025
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black mb-6 leading-tight max-w-3xl">Số hóa toàn diện<br>công tác
+                    quản lý<br><span class="text-green-300">Khu Bảo Tồn Thiên Nhiên Pù Huống</span></h2>
+                <p class="text-green-100/90 max-w-2xl leading-relaxed mb-8">
+                    Xây dựng hệ thống quản trị hồ sơ tập trung, kết hợp công nghệ GIS, AI và SMART Patrol để hiện đại
+                    hóa toàn bộ công tác lâm sinh, hành chính và bảo tồn đa dạng sinh học tại Pù Huống, Nghệ An.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                        <p class="text-2xl font-black text-green-300">40,128</p>
+                        <p class="text-[10px] text-green-100/80 uppercase tracking-wider">Ha diện tích</p>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                        <p class="text-2xl font-black text-green-300">19+</p>
+                        <p class="text-[10px] text-green-100/80 uppercase tracking-wider">Module phần mềm</p>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                        <p class="text-2xl font-black text-green-300">124</p>
+                        <p class="text-[10px] text-green-100/80 uppercase tracking-wider">Cán bộ CNV</p>
+                    </div>
+                    <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                        <p class="text-2xl font-black text-green-300">AI</p>
+                        <p class="text-[10px] text-green-100/80 uppercase tracking-wider">Tích hợp trợ lý</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto bg-gray-50" id="demo-main"></main>
-    </div>
-</div>
+        <!-- MỤC TIÊU -->
+        <section class="max-w-6xl mx-auto px-6 py-16">
+            <div class="text-center mb-12">
+                <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Tầm nhìn & Chiến lược</p>
+                <h3 class="text-2xl md:text-3xl font-black text-slate-800">Mục tiêu cốt lõi của dự án</h3>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
+                    <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i data-lucide="file-check" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-bold mb-2">Số hóa 100%</h4>
+                    <p class="text-sm text-gray-500">Toàn bộ hồ sơ, công văn và dữ liệu lâm sinh được lưu trữ điện tử.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4"><i
+                            data-lucide="map-pin" class="w-6 h-6"></i></div>
+                    <h4 class="font-bold mb-2">GIS & SMART</h4>
+                    <p class="text-sm text-gray-500">Giám sát rừng qua bản đồ GIS, tích hợp SMART Patrol và bẫy ảnh.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
+                    <div
+                        class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i data-lucide="bot" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-bold mb-2">AI Trợ lý</h4>
+                    <p class="text-sm text-gray-500">Tra cứu nhanh luật lâm nghiệp, quy định nội bộ bằng trí tuệ nhân
+                        tạo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm feat-card">
+                    <div
+                        class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4">
+                        <i data-lucide="wifi-off" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="font-bold mb-2">Online & Offline</h4>
+                    <p class="text-sm text-gray-500">Hoạt động cả khi mất kết nối tại các trạm kiểm lâm vùng sâu.</p>
+                </div>
+            </div>
+        </section>
 
-<!-- FOOTER -->
-<footer id="global-footer" class="bg-white border-t py-8 px-6">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="flex items-center gap-3">
-            <div class="p-2 bg-slate-100 rounded-lg"><i data-lucide="award" class="w-5 h-5 text-green-700"></i></div>
-            <div class="text-[11px] text-gray-500 leading-tight">
-                <strong>BAN QUẢN LÝ KHU BẢO TỒN THIÊN NHIÊN PÙ HUỐNG - NGHỆ AN</strong><br>
-                Tư vấn thiết kế: <strong>Lộc Vũ Trung</strong> - Chuyên gia GIS & Dữ liệu số Lâm nghiệp
+        <!-- 19 MODULE -->
+        <section class="bg-white py-16 border-y border-gray-100">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Kiến trúc hệ thống</p>
+                    <h3 class="text-2xl md:text-3xl font-black text-slate-800">19 Module chức năng</h3>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="module-grid"></div>
+            </div>
+        </section>
+
+        <!-- NGÂN SÁCH -->
+        <section class="max-w-6xl mx-auto px-6 py-16">
+            <div class="grid lg:grid-cols-2 gap-10">
+                <div>
+                    <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Tài chính</p>
+                    <h3 class="text-2xl font-black text-slate-800 mb-6">Dự toán ngân sách 3 năm</h3>
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 border-b">
+                                <tr>
+                                    <th class="p-4 text-left font-bold text-gray-600">Hạng mục</th>
+                                    <th class="p-4 text-right font-bold text-gray-600">Chi phí</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                <tr>
+                                    <td class="p-4 flex items-center gap-2"><i data-lucide="server"
+                                            class="w-4 h-4 text-blue-500"></i> Hạ tầng VPS (3 năm)</td>
+                                    <td class="p-4 text-right font-semibold">3.000.000đ</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 flex items-center gap-2"><i data-lucide="cloud"
+                                            class="w-4 h-4 text-sky-500"></i> Google Workspace 2TB (3 năm)</td>
+                                    <td class="p-4 text-right font-semibold">6.000.000đ</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 flex items-center gap-2"><i data-lucide="globe"
+                                            class="w-4 h-4 text-green-500"></i> Tên miền (600k/năm × 3)</td>
+                                    <td class="p-4 text-right font-semibold">1.800.000đ</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 flex items-center gap-2"><i data-lucide="cpu"
+                                            class="w-4 h-4 text-purple-500"></i> API AI Token (3 năm)</td>
+                                    <td class="p-4 text-right font-semibold">3.000.000đ</td>
+                                </tr>
+                                <tr class="bg-green-50">
+                                    <td class="p-4 flex items-center gap-2 font-bold text-green-700"><i
+                                            data-lucide="code" class="w-4 h-4"></i> Phát triển PM & Vận hành (2 tháng)
+                                    </td>
+                                    <td class="p-4 text-right font-bold text-green-700">60.000.000đ</td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-slate-900 text-white">
+                                <tr>
+                                    <td class="p-4 font-bold">TỔNG CỘNG</td>
+                                    <td class="p-4 text-right text-lg font-black text-green-400">73.800.000đ</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">Lộ trình</p>
+                    <h3 class="text-2xl font-black text-slate-800 mb-6">Timeline triển khai (8 tuần)</h3>
+                    <div class="space-y-0 border-l-2 border-green-200 ml-4">
+                        <div class="relative pl-8 pb-6 timeline-dot">
+                            <p class="text-xs font-bold text-green-600">Tuần 1-2</p>
+                            <p class="font-bold text-sm">Khảo sát & Thiết kế hệ thống</p>
+                            <p class="text-xs text-gray-500">Thu thập yêu cầu, thiết kế CSDL, UI/UX prototype</p>
+                        </div>
+                        <div class="relative pl-8 pb-6 timeline-dot">
+                            <p class="text-xs font-bold text-green-600">Tuần 3-4</p>
+                            <p class="font-bold text-sm">Phát triển Module lõi</p>
+                            <p class="text-xs text-gray-500">Nhân sự, Công văn, Kho, Xăng dầu, Nhà bếp, Lương</p>
+                        </div>
+                        <div class="relative pl-8 pb-6 timeline-dot">
+                            <p class="text-xs font-bold text-green-600">Tuần 5-6</p>
+                            <p class="font-bold text-sm">Module chuyên sâu</p>
+                            <p class="text-xs text-gray-500">GIS, SMART Patrol, Bio-Database, AI, Rừng trồng</p>
+                        </div>
+                        <div class="relative pl-8 pb-6 timeline-dot">
+                            <p class="text-xs font-bold text-green-600">Tuần 7</p>
+                            <p class="font-bold text-sm">Tích hợp & Vùng đệm</p>
+                            <p class="text-xs text-gray-500">Du lịch giáo dục, Community, Tin tức, Phân quyền</p>
+                        </div>
+                        <div class="relative pl-8 timeline-dot">
+                            <p class="text-xs font-bold text-green-600">Tuần 8</p>
+                            <p class="font-bold text-sm">Testing & Go-live</p>
+                            <p class="text-xs text-gray-500">UAT, đào tạo cán bộ, triển khai chính thức</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CÔNG NGHỆ -->
+        <section class="bg-slate-900 text-white py-16">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center mb-10">
+                    <p class="text-xs font-bold text-green-400 uppercase tracking-widest mb-2">Nền tảng</p>
+                    <h3 class="text-2xl font-black">Công nghệ sử dụng</h3>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-center">
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl mb-1">🌐</p>
+                        <p class="text-xs font-bold">HTML/CSS/JS</p>
+                        <p class="text-[10px] text-gray-400">Frontend</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl mb-1">⚡</p>
+                        <p class="text-xs font-bold">Node.js</p>
+                        <p class="text-[10px] text-gray-400">Backend</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl mb-1">🗄️</p>
+                        <p class="text-xs font-bold">PostgreSQL</p>
+                        <p class="text-[10px] text-gray-400">Database</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl mb-1">🗺️</p>
+                        <p class="text-xs font-bold">Leaflet GIS</p>
+                        <p class="text-[10px] text-gray-400">Bản đồ</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl mb-1">🤖</p>
+                        <p class="text-xs font-bold">Claude AI</p>
+                        <p class="text-[10px] text-gray-400">Trợ lý AI</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl mb-1">☁️</p>
+                        <p class="text-xs font-bold">VPS Linux</p>
+                        <p class="text-[10px] text-gray-400">Hosting</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div><!-- end sec-report -->
+
+    <!-- ==================== SECTION II: DEMO APP ==================== -->
+    <div id="sec-demo" class="hidden" style="height:calc(100vh - 64px)">
+        <!-- Backdrop overlay (mobile) -->
+        <div id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
+        <div class="flex h-full relative">
+            <!-- Sidebar (PC: static | Mobile: drawer) -->
+            <aside id="demo-sidebar"
+                class="w-72 lg:w-64 bg-white border-r flex flex-col shrink-0 overflow-hidden lg:relative lg:transform-none">
+                <!-- Sidebar header -->
+                <div class="p-4 border-b border-gray-100 bg-white flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div
+                            class="w-9 h-9 bg-green-600 rounded-xl text-white flex items-center justify-center shadow-md shadow-green-200">
+                            <i data-lucide="trees" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-black text-green-800 leading-none">PÙ HUỐNG</p>
+                            <p class="text-[10px] text-gray-400 font-medium">v2.0 Demo</p>
+                        </div>
+                    </div>
+                    <!-- Close button (mobile only) -->
+                    <button onclick="closeSidebar()"
+                        class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Nav menu -->
+                <nav class="flex-1 overflow-y-auto sidebar-scroll p-3 space-y-0.5" id="sidebar-nav"></nav>
+
+                <!-- User footer -->
+                <div class="p-3 border-t bg-slate-50">
+                    <div class="flex items-center gap-2.5 px-2 py-2 rounded-xl">
+                        <div
+                            class="w-9 h-9 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-xs shadow">
+                            LVT</div>
+                        <div class="overflow-hidden flex-1">
+                            <p class="text-xs font-bold truncate">Lộc Vũ Trung</p>
+                            <p class="text-[10px] text-gray-400">Quản trị viên</p>
+                        </div>
+                        <button type="button" aria-label="Đăng xuất"
+                            class="text-gray-300 hover:text-red-500 transition-colors">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content wrapper -->
+            <div id="demo-main-wrap" class="flex flex-col flex-1 overflow-hidden">
+                <!-- Mobile top bar -->
+                <div id="demo-mobile-bar"
+                    class="lg:hidden bg-white border-b px-4 h-14 flex items-center gap-3 shrink-0">
+                    <button type="button" onclick="openSidebar()"
+                        class="w-9 h-9 rounded-xl bg-green-50 text-green-700 flex items-center justify-center hover:bg-green-100 transition-colors">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <div class="flex items-center gap-2 flex-1 min-w-0">
+                        <span id="mobile-current-page" class="text-sm font-bold text-slate-800 truncate">Bảng điều
+                            khiển</span>
+                    </div>
+                    <div
+                        class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-[10px]">
+                        LVT</div>
+                </div>
+
+                <!-- Content area -->
+                <main class="flex-1 overflow-y-auto bg-gray-50" id="demo-main"></main>
             </div>
         </div>
-        <div class="flex gap-2">
-            <span class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 border px-3 py-1.5 rounded-full"><i data-lucide="shield-check" class="w-3 h-3"></i> SSL</span>
-            <span class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 border px-3 py-1.5 rounded-full"><i data-lucide="hard-drive" class="w-3 h-3"></i> 2TB Cloud</span>
-            <span class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 border px-3 py-1.5 rounded-full"><i data-lucide="wifi" class="w-3 h-3"></i> Online/Offline</span>
-        </div>
     </div>
-</footer>
 
-<script>
-// ========== DATA ==========
-const MODULES = [
-    {id:'dashboard',icon:'layout-dashboard',name:'Tổng quan',color:'green',group:'main'},
-    {id:'gis',icon:'map',name:'GIS & Bản đồ',color:'emerald',group:'main'},
-    {id:'smart',icon:'radar',name:'SMART & Tuần tra',color:'teal',group:'main'},
-    {id:'bio',icon:'leaf',name:'Động - Thực vật',color:'lime',group:'main'},
-    {id:'hr',icon:'users',name:'Nhân sự & Lương',color:'blue',group:'admin'},
-    {id:'attendance',icon:'calendar-check',name:'Chấm công & Nghỉ phép',color:'indigo',group:'admin'},
-    {id:'docin',icon:'file-input',name:'Công văn Đến - Đi',color:'sky',group:'admin'},
-    {id:'archive',icon:'archive',name:'Lưu trữ Hồ sơ',color:'cyan',group:'admin'},
-    {id:'warehouse',icon:'warehouse',name:'Quản lý Kho',color:'amber',group:'logistics'},
-    {id:'fuel',icon:'fuel',name:'Xăng dầu & Xe máy',color:'orange',group:'logistics'},
-    {id:'kitchen',icon:'cooking-pot',name:'Quản lý Nhà bếp',color:'red',group:'logistics'},
-    {id:'forest',icon:'tree-pine',name:'Rừng trồng & Cây xanh',color:'green',group:'forestry'},
-    {id:'evaluate',icon:'bar-chart-3',name:'Đánh giá Năng lực',color:'violet',group:'forestry'},
-    {id:'tourism',icon:'backpack',name:'Du lịch & Giáo dục',color:'pink',group:'community'},
-    {id:'community',icon:'home',name:'Vùng đệm & DVMTR',color:'rose',group:'community'},
-    {id:'news',icon:'newspaper',name:'Tin tức Nội bộ',color:'slate',group:'community'},
-    {id:'permission',icon:'shield',name:'Phân quyền',color:'gray',group:'system'},
-    {id:'ai',icon:'bot',name:'AI Trợ lý Luật',color:'green',group:'system',highlight:true},
-];
+    <!-- FOOTER -->
+    <footer id="global-footer" class="bg-white border-t py-8 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-slate-100 rounded-lg"><i data-lucide="award" class="w-5 h-5 text-green-700"></i>
+                </div>
+                <div class="text-[11px] text-gray-500 leading-tight">
+                    <strong>BAN QUẢN LÝ KHU BẢO TỒN THIÊN NHIÊN PÙ HUỐNG - NGHỆ AN</strong><br>
+                    Tư vấn thiết kế: <strong>Lộc Vũ Trung</strong> - Chuyên gia GIS & Dữ liệu số Lâm nghiệp
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <span
+                    class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 border px-3 py-1.5 rounded-full"><i
+                        data-lucide="shield-check" class="w-3 h-3"></i> SSL</span>
+                <span
+                    class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 border px-3 py-1.5 rounded-full"><i
+                        data-lucide="hard-drive" class="w-3 h-3"></i> 2TB Cloud</span>
+                <span
+                    class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 border px-3 py-1.5 rounded-full"><i
+                        data-lucide="wifi" class="w-3 h-3"></i> Online/Offline</span>
+            </div>
+        </div>
+    </footer>
 
-const GROUPS = [
-    {key:'main',label:'Giám sát & Bảo tồn'},
-    {key:'admin',label:'Hành chính'},
-    {key:'logistics',label:'Hậu cần'},
-    {key:'forestry',label:'Lâm sinh'},
-    {key:'community',label:'Cộng đồng'},
-    {key:'system',label:'Hệ thống'},
-];
+    <script>
+        // ========== DATA ==========
+        const MODULES = [
+            { id: 'dashboard', icon: 'layout-dashboard', name: 'Tổng quan', color: 'green', group: 'main' },
+            { id: 'gis', icon: 'map', name: 'GIS & Bản đồ', color: 'emerald', group: 'main' },
+            { id: 'smart', icon: 'radar', name: 'SMART & Tuần tra', color: 'teal', group: 'main' },
+            { id: 'bio', icon: 'leaf', name: 'Động - Thực vật', color: 'lime', group: 'main' },
+            { id: 'hr', icon: 'users', name: 'Nhân sự & Lương', color: 'blue', group: 'admin' },
+            { id: 'attendance', icon: 'calendar-check', name: 'Chấm công & Nghỉ phép', color: 'indigo', group: 'admin' },
+            { id: 'docin', icon: 'file-input', name: 'Công văn Đến - Đi', color: 'sky', group: 'admin' },
+            { id: 'archive', icon: 'archive', name: 'Lưu trữ Hồ sơ', color: 'cyan', group: 'admin' },
+            { id: 'warehouse', icon: 'warehouse', name: 'Quản lý Kho', color: 'amber', group: 'logistics' },
+            { id: 'fuel', icon: 'fuel', name: 'Xăng dầu & Xe máy', color: 'orange', group: 'logistics' },
+            { id: 'kitchen', icon: 'cooking-pot', name: 'Quản lý Nhà bếp', color: 'red', group: 'logistics' },
+            { id: 'forest', icon: 'tree-pine', name: 'Rừng trồng & Cây xanh', color: 'green', group: 'forestry' },
+            { id: 'evaluate', icon: 'bar-chart-3', name: 'Đánh giá Năng lực', color: 'violet', group: 'forestry' },
+            { id: 'tourism', icon: 'backpack', name: 'Du lịch & Giáo dục', color: 'pink', group: 'community' },
+            { id: 'community', icon: 'home', name: 'Vùng đệm & DVMTR', color: 'rose', group: 'community' },
+            { id: 'news', icon: 'newspaper', name: 'Tin tức Nội bộ', color: 'slate', group: 'community' },
+            { id: 'permission', icon: 'shield', name: 'Phân quyền', color: 'gray', group: 'system' },
+            { id: 'ai', icon: 'bot', name: 'AI Trợ lý Luật', color: 'green', group: 'system', highlight: true },
+        ];
 
-// ========== MODULE GRID (Thuyết minh) ==========
-const moduleGrid = document.getElementById('module-grid');
-const colorMap = {green:'bg-green-50 text-green-600',emerald:'bg-emerald-50 text-emerald-600',teal:'bg-teal-50 text-teal-600',lime:'bg-lime-50 text-lime-600',blue:'bg-blue-50 text-blue-600',indigo:'bg-indigo-50 text-indigo-600',sky:'bg-sky-50 text-sky-600',cyan:'bg-cyan-50 text-cyan-600',amber:'bg-amber-50 text-amber-600',orange:'bg-orange-50 text-orange-600',red:'bg-red-50 text-red-600',violet:'bg-violet-50 text-violet-600',pink:'bg-pink-50 text-pink-600',rose:'bg-rose-50 text-rose-600',slate:'bg-slate-100 text-slate-600',gray:'bg-gray-100 text-gray-600'};
-MODULES.forEach(m => {
-    const c = colorMap[m.color] || 'bg-gray-50 text-gray-600';
-    moduleGrid.innerHTML += `<div class="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-3 feat-card">
+        const GROUPS = [
+            { key: 'main', label: 'Giám sát & Bảo tồn' },
+            { key: 'admin', label: 'Hành chính' },
+            { key: 'logistics', label: 'Hậu cần' },
+            { key: 'forestry', label: 'Lâm sinh' },
+            { key: 'community', label: 'Cộng đồng' },
+            { key: 'system', label: 'Hệ thống' },
+        ];
+
+        // ========== MODULE GRID (Thuyết minh) ==========
+        const moduleGrid = document.getElementById('module-grid');
+        const colorMap = { green: 'bg-green-50 text-green-600', emerald: 'bg-emerald-50 text-emerald-600', teal: 'bg-teal-50 text-teal-600', lime: 'bg-lime-50 text-lime-600', blue: 'bg-blue-50 text-blue-600', indigo: 'bg-indigo-50 text-indigo-600', sky: 'bg-sky-50 text-sky-600', cyan: 'bg-cyan-50 text-cyan-600', amber: 'bg-amber-50 text-amber-600', orange: 'bg-orange-50 text-orange-600', red: 'bg-red-50 text-red-600', violet: 'bg-violet-50 text-violet-600', pink: 'bg-pink-50 text-pink-600', rose: 'bg-rose-50 text-rose-600', slate: 'bg-slate-100 text-slate-600', gray: 'bg-gray-100 text-gray-600' };
+        MODULES.forEach(m => {
+            const c = colorMap[m.color] || 'bg-gray-50 text-gray-600';
+            moduleGrid.innerHTML += `<div class="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-3 feat-card">
         <div class="w-10 h-10 ${c} rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${m.icon}" class="w-5 h-5"></i></div>
         <span class="text-xs font-bold text-slate-700">${m.name}</span>
     </div>`;
-});
+        });
 
-// ========== SIDEBAR ==========
-const sidebarNav = document.getElementById('sidebar-nav');
-GROUPS.forEach(g => {
-    sidebarNav.innerHTML += `<p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-3 pt-4 pb-1">${g.label}</p>`;
-    MODULES.filter(m => m.group === g.key).forEach(m => {
-        const hl = m.highlight ? 'bg-green-100 border border-green-200 text-green-700 font-bold' : '';
-        sidebarNav.innerHTML += `<a onclick="showTab('${m.id}',this)" class="sidebar-item ${m.id==='dashboard'?'active':''} ${hl} flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px]"><i data-lucide="${m.icon}" class="w-4 h-4 shrink-0"></i>${m.name}</a>`;
-    });
-});
+        // ========== SIDEBAR ==========
+        const sidebarNav = document.getElementById('sidebar-nav');
+        GROUPS.forEach(g => {
+            sidebarNav.innerHTML += `<p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest px-3 pt-4 pb-1 select-none">${g.label}</p>`;
+            MODULES.filter(m => m.group === g.key).forEach(m => {
+                const hl = m.highlight ? 'bg-green-100 border border-green-200 text-green-700 font-bold' : '';
+                sidebarNav.innerHTML += `<a onclick="showTab('${m.id}',this)" class="sidebar-item ${m.id === 'dashboard' ? 'active' : ''} ${hl} flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px]"><i data-lucide="${m.icon}" class="w-4 h-4 shrink-0"></i>${m.name}</a>`;
+            });
+        });
 
-// ========== DEMO CONTENT GENERATORS ==========
-function statCard(icon,label,value,extra,colorClass){
-    return `<div class="bg-white p-5 border border-gray-100 rounded-2xl shadow-sm card-h transition-all">
+        // ========== SIDEBAR TOGGLE (MOBILE) ==========
+        function openSidebar() {
+            const s = document.getElementById('demo-sidebar');
+            const b = document.getElementById('sidebar-backdrop');
+            s.classList.add('sidebar-open');
+            b.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            const s = document.getElementById('demo-sidebar');
+            const b = document.getElementById('sidebar-backdrop');
+            s.classList.remove('sidebar-open');
+            b.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // ========== DEMO CONTENT GENERATORS ==========
+        function statCard(icon, label, value, extra, colorClass) {
+            return `<div class="bg-white p-5 border border-gray-100 rounded-2xl shadow-sm card-h transition-all">
         <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 ${colorClass} rounded-xl flex items-center justify-center"><i data-lucide="${icon}" class="w-5 h-5"></i></div>
         <span class="text-gray-500 text-[10px] font-bold uppercase tracking-tight">${label}</span></div>
-        <h4 class="text-2xl font-black">${value} <span class="text-xs font-normal ${extra.includes('+')?'text-green-500':extra.includes('↓')?'text-red-500':'text-gray-400'} ml-1">${extra}</span></h4>
+        <h4 class="text-2xl font-black">${value} <span class="text-xs font-normal ${extra.includes('+') ? 'text-green-500' : extra.includes('↓') ? 'text-red-500' : 'text-gray-400'} ml-1">${extra}</span></h4>
     </div>`;
-}
+        }
 
-function tableWrap(headers, rows){
-    let h = headers.map(x=>`<th class="p-3 text-left text-[11px] font-bold text-gray-500 uppercase">${x}</th>`).join('');
-    let r = rows.map(row => `<tr class="hover:bg-slate-50 transition-colors">${row.map(c=>`<td class="p-3 text-sm">${c}</td>`).join('')}</tr>`).join('');
-    return `<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"><table class="w-full"><thead class="bg-slate-50 border-b"><tr>${h}</tr></thead><tbody class="divide-y">${r}</tbody></table></div>`;
-}
+        function tableWrap(headers, rows) {
+            let h = headers.map(x => `<th class="p-3 text-left text-[11px] font-bold text-gray-500 uppercase">${x}</th>`).join('');
+            let r = rows.map(row => `<tr class="hover:bg-slate-50 transition-colors">${row.map(c => `<td class="p-3 text-sm">${c}</td>`).join('')}</tr>`).join('');
+            return `<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"><table class="w-full"><thead class="bg-slate-50 border-b"><tr>${h}</tr></thead><tbody class="divide-y">${r}</tbody></table></div>`;
+        }
 
-function badge(text,color){return `<span class="px-2 py-0.5 bg-${color}-100 text-${color}-700 text-[10px] rounded-full font-bold">${text}</span>`;}
+        function badge(text, color) { return `<span class="px-2 py-0.5 bg-${color}-100 text-${color}-700 text-[10px] rounded-full font-bold">${text}</span>`; }
 
-function pageHeader(title,subtitle,btnText,btnIcon){
-    return `<div class="flex justify-between items-end mb-6"><div><h2 class="text-xl font-black text-slate-800">${title}</h2><p class="text-xs text-gray-500 mt-1">${subtitle||''}</p></div>
-    ${btnText?`<button class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-green-100 flex items-center gap-2 hover:bg-green-700"><i data-lucide="${btnIcon||'plus'}" class="w-4 h-4"></i>${btnText}</button>`:''}</div>`;
-}
+        function pageHeader(title, subtitle, btnText, btnIcon) {
+            return `<div class="flex justify-between items-end mb-6"><div><h2 class="text-xl font-black text-slate-800">${title}</h2><p class="text-xs text-gray-500 mt-1">${subtitle || ''}</p></div>
+    ${btnText ? `<button class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-green-100 flex items-center gap-2 hover:bg-green-700"><i data-lucide="${btnIcon || 'plus'}" class="w-4 h-4"></i>${btnText}</button>` : ''}</div>`;
+        }
 
-function progressBar(label,pct,color){
-    return `<div class="mb-3"><div class="flex justify-between text-[11px] font-bold mb-1"><span>${label}</span><span>${pct}%</span></div>
+        function progressBar(label, pct, color) {
+            return `<div class="mb-3"><div class="flex justify-between text-[11px] font-bold mb-1"><span>${label}</span><span>${pct}%</span></div>
     <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"><div class="bg-${color}-500 h-full rounded-full transition-all duration-1000" style="width:${pct}%"></div></div></div>`;
-}
+        }
 
-// ========== ALL DEMO PAGES ==========
-const PAGES = {
-dashboard: () => `<div class="p-6 slide-up">
-    ${pageHeader('Bảng điều khiển hệ thống','Cập nhật realtime - Khu BTTN Pù Huống')}
+        // ========== ALL DEMO PAGES ==========
+        const PAGES = {
+            dashboard: () => `<div class="p-6 slide-up">
+    ${pageHeader('Bảng điều khiển hệ thống', 'Cập nhật realtime - Khu BTTN Pù Huống')}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        ${statCard('file-text','Công văn','124','+5 hôm nay','bg-blue-50 text-blue-600')}
-        ${statCard('users','Cán bộ','124','08 đang trực','bg-green-50 text-green-600')}
-        ${statCard('fuel','Xăng dầu','450L','↓ 12%','bg-orange-50 text-orange-600')}
-        ${statCard('database','Lưu trữ','280GB','/2TB','bg-purple-50 text-purple-600')}
+        ${statCard('file-text', 'Công văn', '124', '+5 hôm nay', 'bg-blue-50 text-blue-600')}
+        ${statCard('users', 'Cán bộ', '124', '08 đang trực', 'bg-green-50 text-green-600')}
+        ${statCard('fuel', 'Xăng dầu', '450L', '↓ 12%', 'bg-orange-50 text-orange-600')}
+        ${statCard('database', 'Lưu trữ', '280GB', '/2TB', 'bg-purple-50 text-purple-600')}
     </div>
     <div class="grid lg:grid-cols-2 gap-6">
         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
@@ -342,8 +773,8 @@ dashboard: () => `<div class="p-6 slide-up">
     </div>
 </div>`,
 
-gis: () => `<div class="p-6 slide-up">
-    ${pageHeader('GIS & Giám sát Rừng','Bản đồ số Khu BTTN Pù Huống - 40,128 ha','Thay đổi lớp','layers')}
+            gis: () => `<div class="p-6 slide-up">
+    ${pageHeader('GIS & Giám sát Rừng', 'Bản đồ số Khu BTTN Pù Huống - 40,128 ha', 'Thay đổi lớp', 'layers')}
     <div class="bg-slate-900 rounded-2xl h-[480px] relative overflow-hidden border-2 border-white shadow-xl mb-6">
         <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover opacity-30 grayscale">
         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-xl p-3 shadow-lg">
@@ -372,20 +803,20 @@ gis: () => `<div class="p-6 slide-up">
     </div>
 </div>`,
 
-smart: () => `<div class="p-6 slide-up">
-    ${pageHeader('SMART Patrol & Bẫy ảnh','Hệ thống giám sát tuần tra rừng thông minh','Tạo lịch tuần tra','radar')}
+            smart: () => `<div class="p-6 slide-up">
+    ${pageHeader('SMART Patrol & Bẫy ảnh', 'Hệ thống giám sát tuần tra rừng thông minh', 'Tạo lịch tuần tra', 'radar')}
     <div class="grid lg:grid-cols-3 gap-4 mb-6">
-        ${statCard('footprints','Lượt tuần tra','48','Tháng này','bg-teal-50 text-teal-600')}
-        ${statCard('camera','Bẫy ảnh','12','Hoạt động','bg-amber-50 text-amber-600')}
-        ${statCard('alert-circle','Vi phạm','03','Phát hiện','bg-red-50 text-red-600')}
+        ${statCard('footprints', 'Lượt tuần tra', '48', 'Tháng này', 'bg-teal-50 text-teal-600')}
+        ${statCard('camera', 'Bẫy ảnh', '12', 'Hoạt động', 'bg-amber-50 text-amber-600')}
+        ${statCard('alert-circle', 'Vi phạm', '03', 'Phát hiện', 'bg-red-50 text-red-600')}
     </div>
     <div class="grid lg:grid-cols-2 gap-6 mb-6">
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <h4 class="font-bold text-sm mb-4 flex items-center gap-2"><i data-lucide="footprints" class="w-4 h-4 text-teal-600"></i> Nhật ký tuần tra gần nhất</h4>
             <div class="space-y-3">
-                <div class="bg-slate-50 p-3 rounded-xl"><div class="flex justify-between mb-1"><span class="text-xs font-bold">Tuyến Khe Bu - Châu Cường</span>${badge('HOÀN THÀNH','green')}</div><p class="text-[10px] text-gray-500">KLV: Nguyễn Văn Hoàng | 14km | 6h30p | 24/01/2025</p></div>
-                <div class="bg-slate-50 p-3 rounded-xl"><div class="flex justify-between mb-1"><span class="text-xs font-bold">Tuyến Xiêng My - Bình Chuẩn</span>${badge('ĐANG ĐI','blue')}</div><p class="text-[10px] text-gray-500">KLV: Trần Hữu Đức | GPS đang ghi | Bắt đầu 06:00</p></div>
-                <div class="bg-slate-50 p-3 rounded-xl"><div class="flex justify-between mb-1"><span class="text-xs font-bold">Tuyến Lục Dạ - Tam Hợp</span>${badge('PHÁT HIỆN VI PHẠM','red')}</div><p class="text-[10px] text-gray-500">Bẫy thú trái phép | Đã lập biên bản | 22/01/2025</p></div>
+                <div class="bg-slate-50 p-3 rounded-xl"><div class="flex justify-between mb-1"><span class="text-xs font-bold">Tuyến Khe Bu - Châu Cường</span>${badge('HOÀN THÀNH', 'green')}</div><p class="text-[10px] text-gray-500">KLV: Nguyễn Văn Hoàng | 14km | 6h30p | 24/01/2025</p></div>
+                <div class="bg-slate-50 p-3 rounded-xl"><div class="flex justify-between mb-1"><span class="text-xs font-bold">Tuyến Xiêng My - Bình Chuẩn</span>${badge('ĐANG ĐI', 'blue')}</div><p class="text-[10px] text-gray-500">KLV: Trần Hữu Đức | GPS đang ghi | Bắt đầu 06:00</p></div>
+                <div class="bg-slate-50 p-3 rounded-xl"><div class="flex justify-between mb-1"><span class="text-xs font-bold">Tuyến Lục Dạ - Tam Hợp</span>${badge('PHÁT HIỆN VI PHẠM', 'red')}</div><p class="text-[10px] text-gray-500">Bẫy thú trái phép | Đã lập biên bản | 22/01/2025</p></div>
             </div>
         </div>
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
@@ -400,80 +831,80 @@ smart: () => `<div class="p-6 slide-up">
     </div>
 </div>`,
 
-bio: () => `<div class="p-6 slide-up">
-    ${pageHeader('Cơ sở dữ liệu Động - Thực vật','Danh lục sinh vật Khu BTTN Pù Huống','Thêm loài','leaf')}
+            bio: () => `<div class="p-6 slide-up">
+    ${pageHeader('Cơ sở dữ liệu Động - Thực vật', 'Danh lục sinh vật Khu BTTN Pù Huống', 'Thêm loài', 'leaf')}
     <div class="grid lg:grid-cols-3 gap-4 mb-6">
-        ${statCard('trees','Thực vật','2,432','Loài ghi nhận','bg-green-50 text-green-600')}
-        ${statCard('bird','Động vật','865','Loài ghi nhận','bg-blue-50 text-blue-600')}
-        ${statCard('alert-octagon','Sách đỏ','127','Loài quý hiếm','bg-red-50 text-red-600')}
+        ${statCard('trees', 'Thực vật', '2,432', 'Loài ghi nhận', 'bg-green-50 text-green-600')}
+        ${statCard('bird', 'Động vật', '865', 'Loài ghi nhận', 'bg-blue-50 text-blue-600')}
+        ${statCard('alert-octagon', 'Sách đỏ', '127', 'Loài quý hiếm', 'bg-red-50 text-red-600')}
     </div>
     <div class="mb-4"><input type="text" placeholder="Tìm kiếm theo tên Việt Nam, tên khoa học..." class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"></div>
-    ${tableWrap(['Tên loài','Tên khoa học','Bộ / Họ','Tình trạng','Ghi nhận'],
-    [
-        ['<div class="flex items-center gap-2"><img src="https://images.unsplash.com/photo-1504006833117-8886a355efbf?auto=format&fit=crop&q=80&w=40" class="w-8 h-8 rounded-lg object-cover"><span class="font-bold">Voọc xám</span></div>','<em class="text-gray-400">Trachypithecus crepusculus</em>','Linh trưởng / Cercopithecidae',badge('CR - Cực kỳ nguy cấp','red'),'Bẫy ảnh #07'],
-        ['<div class="flex items-center gap-2"><img src="https://images.unsplash.com/photo-1474511320723-9a56873571b7?auto=format&fit=crop&q=80&w=40" class="w-8 h-8 rounded-lg object-cover"><span class="font-bold">Mang lớn</span></div>','<em class="text-gray-400">Muntiacus vuquangensis</em>','Guốc chẵn / Cervidae',badge('EN - Nguy cấp','orange'),'Tuần tra tuyến 3'],
-        ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center"><i data-lucide="flower-2" class="w-4 h-4 text-green-600"></i></div><span class="font-bold">Pơ mu</span></div>','<em class="text-gray-400">Fokienia hodginsii</em>','Bách / Cupressaceae',badge('VU - Sẽ nguy cấp','amber'),'Ô tiêu chuẩn 12'],
-        ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center"><i data-lucide="flower-2" class="w-4 h-4 text-green-600"></i></div><span class="font-bold">Sa mu dầu</span></div>','<em class="text-gray-400">Cunninghamia konishii</em>','Bách tán / Taxodiaceae',badge('EN - Nguy cấp','orange'),'Khe Bu, 1,200m'],
-    ])}
+    ${tableWrap(['Tên loài', 'Tên khoa học', 'Bộ / Họ', 'Tình trạng', 'Ghi nhận'],
+                [
+                    ['<div class="flex items-center gap-2"><img src="https://images.unsplash.com/photo-1504006833117-8886a355efbf?auto=format&fit=crop&q=80&w=40" class="w-8 h-8 rounded-lg object-cover"><span class="font-bold">Voọc xám</span></div>', '<em class="text-gray-400">Trachypithecus crepusculus</em>', 'Linh trưởng / Cercopithecidae', badge('CR - Cực kỳ nguy cấp', 'red'), 'Bẫy ảnh #07'],
+                    ['<div class="flex items-center gap-2"><img src="https://images.unsplash.com/photo-1474511320723-9a56873571b7?auto=format&fit=crop&q=80&w=40" class="w-8 h-8 rounded-lg object-cover"><span class="font-bold">Mang lớn</span></div>', '<em class="text-gray-400">Muntiacus vuquangensis</em>', 'Guốc chẵn / Cervidae', badge('EN - Nguy cấp', 'orange'), 'Tuần tra tuyến 3'],
+                    ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center"><i data-lucide="flower-2" class="w-4 h-4 text-green-600"></i></div><span class="font-bold">Pơ mu</span></div>', '<em class="text-gray-400">Fokienia hodginsii</em>', 'Bách / Cupressaceae', badge('VU - Sẽ nguy cấp', 'amber'), 'Ô tiêu chuẩn 12'],
+                    ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center"><i data-lucide="flower-2" class="w-4 h-4 text-green-600"></i></div><span class="font-bold">Sa mu dầu</span></div>', '<em class="text-gray-400">Cunninghamia konishii</em>', 'Bách tán / Taxodiaceae', badge('EN - Nguy cấp', 'orange'), 'Khe Bu, 1,200m'],
+                ])}
 </div>`,
 
-hr: () => `<div class="p-6 slide-up">
-    ${pageHeader('Quản lý Nhân sự & Tiền lương','124 hồ sơ cán bộ công nhân viên','Thêm cán bộ','user-plus')}
+            hr: () => `<div class="p-6 slide-up">
+    ${pageHeader('Quản lý Nhân sự & Tiền lương', '124 hồ sơ cán bộ công nhân viên', 'Thêm cán bộ', 'user-plus')}
     <div class="grid lg:grid-cols-4 gap-4 mb-6">
-        ${statCard('users','Tổng CB','124','','bg-blue-50 text-blue-600')}
-        ${statCard('user-check','Đang trực','98','','bg-green-50 text-green-600')}
-        ${statCard('user-x','Nghỉ phép','18','','bg-amber-50 text-amber-600')}
-        ${statCard('wallet','Quỹ lương','1.72B','đ/tháng','bg-purple-50 text-purple-600')}
+        ${statCard('users', 'Tổng CB', '124', '', 'bg-blue-50 text-blue-600')}
+        ${statCard('user-check', 'Đang trực', '98', '', 'bg-green-50 text-green-600')}
+        ${statCard('user-x', 'Nghỉ phép', '18', '', 'bg-amber-50 text-amber-600')}
+        ${statCard('wallet', 'Quỹ lương', '1.72B', 'đ/tháng', 'bg-purple-50 text-purple-600')}
     </div>
-    ${tableWrap(['Cán bộ','Chức vụ','Đơn vị','Trạng thái','Lương'],
-    [
-        ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold text-[10px]">TH</div><span class="font-bold">Trần Văn Hùng</span></div>','Kiểm lâm viên','Trạm Châu Cường',badge('ĐANG TRỰC','green'),'<span class="font-bold">12.500.000đ</span>'],
-        ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-[10px]">NA</div><span class="font-bold">Nguyễn Thị An</span></div>','Kế toán','Văn phòng BQL',badge('NGHỈ PHÉP','amber'),'<span class="font-bold">14.200.000đ</span>'],
-        ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center font-bold text-[10px]">HD</div><span class="font-bold">Hoàng Đức Minh</span></div>','Trạm trưởng','Trạm Xiêng My',badge('ĐANG TRỰC','green'),'<span class="font-bold">16.800.000đ</span>'],
-        ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-pink-100 text-pink-700 rounded-full flex items-center justify-center font-bold text-[10px]">LH</div><span class="font-bold">Lê Thị Hoa</span></div>','Chuyên viên','Phòng KH-TC',badge('ĐANG TRỰC','green'),'<span class="font-bold">13.100.000đ</span>'],
-    ])}
+    ${tableWrap(['Cán bộ', 'Chức vụ', 'Đơn vị', 'Trạng thái', 'Lương'],
+                [
+                    ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold text-[10px]">TH</div><span class="font-bold">Trần Văn Hùng</span></div>', 'Kiểm lâm viên', 'Trạm Châu Cường', badge('ĐANG TRỰC', 'green'), '<span class="font-bold">12.500.000đ</span>'],
+                    ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-[10px]">NA</div><span class="font-bold">Nguyễn Thị An</span></div>', 'Kế toán', 'Văn phòng BQL', badge('NGHỈ PHÉP', 'amber'), '<span class="font-bold">14.200.000đ</span>'],
+                    ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center font-bold text-[10px]">HD</div><span class="font-bold">Hoàng Đức Minh</span></div>', 'Trạm trưởng', 'Trạm Xiêng My', badge('ĐANG TRỰC', 'green'), '<span class="font-bold">16.800.000đ</span>'],
+                    ['<div class="flex items-center gap-2"><div class="w-8 h-8 bg-pink-100 text-pink-700 rounded-full flex items-center justify-center font-bold text-[10px]">LH</div><span class="font-bold">Lê Thị Hoa</span></div>', 'Chuyên viên', 'Phòng KH-TC', badge('ĐANG TRỰC', 'green'), '<span class="font-bold">13.100.000đ</span>'],
+                ])}
 </div>`,
 
-attendance: () => `<div class="p-6 slide-up">
-    ${pageHeader('Chấm công & Nghỉ phép','Tháng 01/2025','Xuất bảng công','download')}
+            attendance: () => `<div class="p-6 slide-up">
+    ${pageHeader('Chấm công & Nghỉ phép', 'Tháng 01/2025', 'Xuất bảng công', 'download')}
     <div class="grid lg:grid-cols-3 gap-4 mb-6">
-        ${statCard('calendar-check','Ngày công TB','23.5','ngày/tháng','bg-green-50 text-green-600')}
-        ${statCard('calendar-x','Tổng nghỉ phép','18','đơn tháng này','bg-amber-50 text-amber-600')}
-        ${statCard('clock','Tăng ca','156','giờ tháng này','bg-blue-50 text-blue-600')}
+        ${statCard('calendar-check', 'Ngày công TB', '23.5', 'ngày/tháng', 'bg-green-50 text-green-600')}
+        ${statCard('calendar-x', 'Tổng nghỉ phép', '18', 'đơn tháng này', 'bg-amber-50 text-amber-600')}
+        ${statCard('clock', 'Tăng ca', '156', 'giờ tháng này', 'bg-blue-50 text-blue-600')}
     </div>
-    ${tableWrap(['Cán bộ','Đơn vị','Ngày công','Nghỉ phép','Tăng ca','Ghi chú'],
-    [
-        ['<span class="font-bold">Trần Văn Hùng</span>','Trạm Châu Cường','<span class="font-bold text-green-600">26</span>','0','12h',badge('ĐỦ CÔNG','green')],
-        ['<span class="font-bold">Nguyễn Thị An</span>','Văn phòng BQL','<span class="font-bold text-amber-600">20</span>','3','0','Nghỉ ốm 2 ngày'],
-        ['<span class="font-bold">Hoàng Đức Minh</span>','Trạm Xiêng My','<span class="font-bold text-green-600">24</span>','1','8h',badge('ĐỦ CÔNG','green')],
-        ['<span class="font-bold">Lê Thị Hoa</span>','Phòng KH-TC','<span class="font-bold text-green-600">23</span>','2','4h','Nghỉ phép năm'],
-    ])}
+    ${tableWrap(['Cán bộ', 'Đơn vị', 'Ngày công', 'Nghỉ phép', 'Tăng ca', 'Ghi chú'],
+                [
+                    ['<span class="font-bold">Trần Văn Hùng</span>', 'Trạm Châu Cường', '<span class="font-bold text-green-600">26</span>', '0', '12h', badge('ĐỦ CÔNG', 'green')],
+                    ['<span class="font-bold">Nguyễn Thị An</span>', 'Văn phòng BQL', '<span class="font-bold text-amber-600">20</span>', '3', '0', 'Nghỉ ốm 2 ngày'],
+                    ['<span class="font-bold">Hoàng Đức Minh</span>', 'Trạm Xiêng My', '<span class="font-bold text-green-600">24</span>', '1', '8h', badge('ĐỦ CÔNG', 'green')],
+                    ['<span class="font-bold">Lê Thị Hoa</span>', 'Phòng KH-TC', '<span class="font-bold text-green-600">23</span>', '2', '4h', 'Nghỉ phép năm'],
+                ])}
 </div>`,
 
-docin: () => `<div class="p-6 slide-up">
-    ${pageHeader('Công văn Đến - Đi','Quản lý luồng văn bản hành chính','Tạo công văn','file-plus')}
+            docin: () => `<div class="p-6 slide-up">
+    ${pageHeader('Công văn Đến - Đi', 'Quản lý luồng văn bản hành chính', 'Tạo công văn', 'file-plus')}
     <div class="flex gap-2 mb-6">
         <button class="px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold">Tất cả</button>
         <button class="px-4 py-2 bg-white border text-gray-500 rounded-lg text-xs font-bold hover:bg-gray-50">Công văn đến</button>
         <button class="px-4 py-2 bg-white border text-gray-500 rounded-lg text-xs font-bold hover:bg-gray-50">Công văn đi</button>
         <button class="px-4 py-2 bg-white border text-gray-500 rounded-lg text-xs font-bold hover:bg-gray-50">Chờ xử lý</button>
     </div>
-    ${tableWrap(['Số hiệu','Trích yếu','Loại','Ngày','Trạng thái'],
-    [
-        ['<span class="font-bold text-blue-600">124/UBND-NV</span>','V/v tăng cường tuần tra bảo vệ rừng mùa khô',badge('ĐẾN','blue'),'24/01/2025',badge('MỚI','green')],
-        ['<span class="font-bold text-green-600">45/BQL-VP</span>','Báo cáo kết quả tuần tra tháng 12/2024',badge('ĐI','green'),'22/01/2025',badge('ĐÃ GỬI','gray')],
-        ['<span class="font-bold text-blue-600">118/SNN-KL</span>','Hướng dẫn chi trả DVMTR quý I/2025',badge('ĐẾN','blue'),'20/01/2025',badge('ĐANG XỬ LÝ','amber')],
-        ['<span class="font-bold text-green-600">43/BQL-TC</span>','Đề nghị cấp kinh phí sửa chữa trạm Bình Chuẩn',badge('ĐI','green'),'18/01/2025',badge('CHỜ DUYỆT','orange')],
-    ])}
+    ${tableWrap(['Số hiệu', 'Trích yếu', 'Loại', 'Ngày', 'Trạng thái'],
+                [
+                    ['<span class="font-bold text-blue-600">124/UBND-NV</span>', 'V/v tăng cường tuần tra bảo vệ rừng mùa khô', badge('ĐẾN', 'blue'), '24/01/2025', badge('MỚI', 'green')],
+                    ['<span class="font-bold text-green-600">45/BQL-VP</span>', 'Báo cáo kết quả tuần tra tháng 12/2024', badge('ĐI', 'green'), '22/01/2025', badge('ĐÃ GỬI', 'gray')],
+                    ['<span class="font-bold text-blue-600">118/SNN-KL</span>', 'Hướng dẫn chi trả DVMTR quý I/2025', badge('ĐẾN', 'blue'), '20/01/2025', badge('ĐANG XỬ LÝ', 'amber')],
+                    ['<span class="font-bold text-green-600">43/BQL-TC</span>', 'Đề nghị cấp kinh phí sửa chữa trạm Bình Chuẩn', badge('ĐI', 'green'), '18/01/2025', badge('CHỜ DUYỆT', 'orange')],
+                ])}
 </div>`,
 
-archive: () => `<div class="p-6 slide-up">
-    ${pageHeader('Lưu trữ Hồ sơ','Kho tài liệu số hóa','Upload hồ sơ','upload')}
+            archive: () => `<div class="p-6 slide-up">
+    ${pageHeader('Lưu trữ Hồ sơ', 'Kho tài liệu số hóa', 'Upload hồ sơ', 'upload')}
     <div class="grid lg:grid-cols-4 gap-4 mb-6">
-        ${statCard('folder','Tổng hồ sơ','1,847','tập','bg-cyan-50 text-cyan-600')}
-        ${statCard('hard-drive','Dung lượng','280GB','/2TB','bg-purple-50 text-purple-600')}
-        ${statCard('search','Tra cứu','342','lượt/tháng','bg-blue-50 text-blue-600')}
-        ${statCard('shield-check','Sao lưu','24/01','Lần cuối','bg-green-50 text-green-600')}
+        ${statCard('folder', 'Tổng hồ sơ', '1,847', 'tập', 'bg-cyan-50 text-cyan-600')}
+        ${statCard('hard-drive', 'Dung lượng', '280GB', '/2TB', 'bg-purple-50 text-purple-600')}
+        ${statCard('search', 'Tra cứu', '342', 'lượt/tháng', 'bg-blue-50 text-blue-600')}
+        ${statCard('shield-check', 'Sao lưu', '24/01', 'Lần cuối', 'bg-green-50 text-green-600')}
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <div class="bg-white p-4 rounded-xl border border-gray-100 text-center feat-card cursor-pointer"><i data-lucide="folder" class="w-8 h-8 text-amber-500 mx-auto mb-2"></i><p class="text-xs font-bold">Hồ sơ nhân sự</p><p class="text-[10px] text-gray-400">245 tập</p></div>
@@ -483,50 +914,50 @@ archive: () => `<div class="p-6 slide-up">
     </div>
 </div>`,
 
-warehouse: () => `<div class="p-6 slide-up">
-    ${pageHeader('Quản lý Kho','Theo dõi vật tư, trang thiết bị','Nhập kho','package-plus')}
+            warehouse: () => `<div class="p-6 slide-up">
+    ${pageHeader('Quản lý Kho', 'Theo dõi vật tư, trang thiết bị', 'Nhập kho', 'package-plus')}
     <div class="grid lg:grid-cols-3 gap-4 mb-6">
-        ${statCard('package','Tổng mặt hàng','386','SKU','bg-amber-50 text-amber-600')}
-        ${statCard('alert-triangle','Sắp hết','12','mặt hàng','bg-red-50 text-red-600')}
-        ${statCard('trending-up','Giá trị kho','845M','VNĐ','bg-blue-50 text-blue-600')}
+        ${statCard('package', 'Tổng mặt hàng', '386', 'SKU', 'bg-amber-50 text-amber-600')}
+        ${statCard('alert-triangle', 'Sắp hết', '12', 'mặt hàng', 'bg-red-50 text-red-600')}
+        ${statCard('trending-up', 'Giá trị kho', '845M', 'VNĐ', 'bg-blue-50 text-blue-600')}
     </div>
-    ${tableWrap(['Mã','Tên vật tư','Loại','Tồn kho','ĐVT','Trạng thái'],
-    [
-        ['<span class="font-mono text-xs">VT001</span>','<span class="font-bold">Ống nhòm Nikon 8x42</span>','Thiết bị','08','Chiếc',badge('ĐỦ','green')],
-        ['<span class="font-mono text-xs">VT015</span>','<span class="font-bold">GPS Garmin 64sx</span>','Thiết bị','03','Chiếc',badge('ĐỦ','green')],
-        ['<span class="font-mono text-xs">VT042</span>','<span class="font-bold">Pin máy bộ đàm</span>','Phụ tùng','05','Cặp',badge('SẮP HẾT','amber')],
-        ['<span class="font-mono text-xs">VT088</span>','<span class="font-bold">Dây thừng 12mm</span>','Vật tư','120','Mét',badge('ĐỦ','green')],
-    ])}
+    ${tableWrap(['Mã', 'Tên vật tư', 'Loại', 'Tồn kho', 'ĐVT', 'Trạng thái'],
+                [
+                    ['<span class="font-mono text-xs">VT001</span>', '<span class="font-bold">Ống nhòm Nikon 8x42</span>', 'Thiết bị', '08', 'Chiếc', badge('ĐỦ', 'green')],
+                    ['<span class="font-mono text-xs">VT015</span>', '<span class="font-bold">GPS Garmin 64sx</span>', 'Thiết bị', '03', 'Chiếc', badge('ĐỦ', 'green')],
+                    ['<span class="font-mono text-xs">VT042</span>', '<span class="font-bold">Pin máy bộ đàm</span>', 'Phụ tùng', '05', 'Cặp', badge('SẮP HẾT', 'amber')],
+                    ['<span class="font-mono text-xs">VT088</span>', '<span class="font-bold">Dây thừng 12mm</span>', 'Vật tư', '120', 'Mét', badge('ĐỦ', 'green')],
+                ])}
 </div>`,
 
-fuel: () => `<div class="p-6 slide-up">
-    ${pageHeader('Xăng dầu & Phương tiện','Quản lý định mức nhiên liệu xe máy, máy móc','Cấp xăng','fuel')}
+            fuel: () => `<div class="p-6 slide-up">
+    ${pageHeader('Xăng dầu & Phương tiện', 'Quản lý định mức nhiên liệu xe máy, máy móc', 'Cấp xăng', 'fuel')}
     <div class="grid lg:grid-cols-2 gap-6 mb-6">
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
             <h4 class="font-bold text-sm mb-4 flex items-center gap-2"><i data-lucide="fuel" class="w-4 h-4 text-orange-500"></i> Định mức xăng xe tháng 01/2025</h4>
-            ${progressBar('37A-123.45 (Xe BQL)',75,'green')}
-            ${progressBar('37C-009.88 (Trạm Châu Cường)',20,'red')}
-            ${progressBar('37A-567.89 (Trạm Xiêng My)',55,'amber')}
-            ${progressBar('37C-111.22 (Trạm Bình Chuẩn)',90,'green')}
+            ${progressBar('37A-123.45 (Xe BQL)', 75, 'green')}
+            ${progressBar('37C-009.88 (Trạm Châu Cường)', 20, 'red')}
+            ${progressBar('37A-567.89 (Trạm Xiêng My)', 55, 'amber')}
+            ${progressBar('37C-111.22 (Trạm Bình Chuẩn)', 90, 'green')}
         </div>
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
             <h4 class="font-bold text-sm mb-4 flex items-center gap-2"><i data-lucide="wrench" class="w-4 h-4 text-slate-500"></i> Bảo trì máy móc</h4>
             <div class="space-y-3">
-                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Máy phát điện Trạm 2</span>${badge('CẦN BẢO TRÌ','blue')}</div>
-                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Máy cưa Husqvarna 365</span>${badge('TỐT','green')}</div>
-                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Máy bơm nước Honda</span>${badge('ĐANG SỬA','amber')}</div>
-                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Xe máy Honda XR150L</span>${badge('TỐT','green')}</div>
+                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Máy phát điện Trạm 2</span>${badge('CẦN BẢO TRÌ', 'blue')}</div>
+                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Máy cưa Husqvarna 365</span>${badge('TỐT', 'green')}</div>
+                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Máy bơm nước Honda</span>${badge('ĐANG SỬA', 'amber')}</div>
+                <div class="p-3 bg-slate-50 rounded-xl flex justify-between items-center"><span class="text-xs font-bold">Xe máy Honda XR150L</span>${badge('TỐT', 'green')}</div>
             </div>
         </div>
     </div>
 </div>`,
 
-kitchen: () => `<div class="p-6 slide-up">
-    ${pageHeader('Quản lý Nhà bếp','Thực đơn & chi phí bếp ăn các trạm','Lập thực đơn','cooking-pot')}
+            kitchen: () => `<div class="p-6 slide-up">
+    ${pageHeader('Quản lý Nhà bếp', 'Thực đơn & chi phí bếp ăn các trạm', 'Lập thực đơn', 'cooking-pot')}
     <div class="grid lg:grid-cols-3 gap-4 mb-6">
-        ${statCard('utensils','Suất ăn/ngày','86','suất','bg-red-50 text-red-600')}
-        ${statCard('wallet','Chi phí TB','3.87M','đ/ngày','bg-amber-50 text-amber-600')}
-        ${statCard('receipt','Quyết toán','Tháng 12','Đã duyệt','bg-green-50 text-green-600')}
+        ${statCard('utensils', 'Suất ăn/ngày', '86', 'suất', 'bg-red-50 text-red-600')}
+        ${statCard('wallet', 'Chi phí TB', '3.87M', 'đ/ngày', 'bg-amber-50 text-amber-600')}
+        ${statCard('receipt', 'Quyết toán', 'Tháng 12', 'Đã duyệt', 'bg-green-50 text-green-600')}
     </div>
     <div class="grid lg:grid-cols-2 gap-6">
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
@@ -538,80 +969,80 @@ kitchen: () => `<div class="p-6 slide-up">
         </div>
         <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <h4 class="font-bold text-sm mb-4">Chi phí bếp ăn theo trạm</h4>
-            ${progressBar('VP Ban quản lý (32 suất)',65,'green')}
-            ${progressBar('Trạm Châu Cường (18 suất)',35,'blue')}
-            ${progressBar('Trạm Xiêng My (22 suất)',45,'amber')}
-            ${progressBar('Trạm Bình Chuẩn (14 suất)',28,'teal')}
+            ${progressBar('VP Ban quản lý (32 suất)', 65, 'green')}
+            ${progressBar('Trạm Châu Cường (18 suất)', 35, 'blue')}
+            ${progressBar('Trạm Xiêng My (22 suất)', 45, 'amber')}
+            ${progressBar('Trạm Bình Chuẩn (14 suất)', 28, 'teal')}
         </div>
     </div>
 </div>`,
 
-forest: () => `<div class="p-6 slide-up">
-    ${pageHeader('Rừng trồng & Mô hình Thí nghiệm','Giám sát sinh trưởng & đánh giá chất lượng rừng','Thêm ô TĐ','tree-pine')}
+            forest: () => `<div class="p-6 slide-up">
+    ${pageHeader('Rừng trồng & Mô hình Thí nghiệm', 'Giám sát sinh trưởng & đánh giá chất lượng rừng', 'Thêm ô TĐ', 'tree-pine')}
     <div class="grid lg:grid-cols-4 gap-4 mb-6">
-        ${statCard('tree-pine','Diện tích RT','450','ha','bg-green-50 text-green-600')}
-        ${statCard('ruler','Ô tiêu chuẩn','24','ô','bg-blue-50 text-blue-600')}
-        ${statCard('trending-up','Tăng trưởng TB','15%','/năm','bg-emerald-50 text-emerald-600')}
-        ${statCard('flask-conical','Mô hình TN','06','mô hình','bg-purple-50 text-purple-600')}
+        ${statCard('tree-pine', 'Diện tích RT', '450', 'ha', 'bg-green-50 text-green-600')}
+        ${statCard('ruler', 'Ô tiêu chuẩn', '24', 'ô', 'bg-blue-50 text-blue-600')}
+        ${statCard('trending-up', 'Tăng trưởng TB', '15%', '/năm', 'bg-emerald-50 text-emerald-600')}
+        ${statCard('flask-conical', 'Mô hình TN', '06', 'mô hình', 'bg-purple-50 text-purple-600')}
     </div>
-    ${tableWrap(['Mô hình','Loài cây','Diện tích','Năm trồng','Tăng trưởng','Đánh giá'],
-    [
-        ['<span class="font-bold">MH-01 Khe Bu</span>','Pơ mu, Sa mu dầu','5.0 ha','2020','<span class="text-green-600 font-bold">+18%</span>',badge('TỐT','green')],
-        ['<span class="font-bold">MH-02 Châu Cường</span>','Lim xanh, Sến mật','3.5 ha','2021','<span class="text-green-600 font-bold">+12%</span>',badge('TỐT','green')],
-        ['<span class="font-bold">MH-03 Bình Chuẩn</span>','Keo lai, Bạch đàn','8.0 ha','2019','<span class="text-amber-600 font-bold">+8%</span>',badge('TRUNG BÌNH','amber')],
-        ['<span class="font-bold">MH-04 Xiêng My</span>','Quế, Trám trắng','4.2 ha','2022','<span class="text-green-600 font-bold">+22%</span>',badge('RẤT TỐT','green')],
-    ])}
+    ${tableWrap(['Mô hình', 'Loài cây', 'Diện tích', 'Năm trồng', 'Tăng trưởng', 'Đánh giá'],
+                [
+                    ['<span class="font-bold">MH-01 Khe Bu</span>', 'Pơ mu, Sa mu dầu', '5.0 ha', '2020', '<span class="text-green-600 font-bold">+18%</span>', badge('TỐT', 'green')],
+                    ['<span class="font-bold">MH-02 Châu Cường</span>', 'Lim xanh, Sến mật', '3.5 ha', '2021', '<span class="text-green-600 font-bold">+12%</span>', badge('TỐT', 'green')],
+                    ['<span class="font-bold">MH-03 Bình Chuẩn</span>', 'Keo lai, Bạch đàn', '8.0 ha', '2019', '<span class="text-amber-600 font-bold">+8%</span>', badge('TRUNG BÌNH', 'amber')],
+                    ['<span class="font-bold">MH-04 Xiêng My</span>', 'Quế, Trám trắng', '4.2 ha', '2022', '<span class="text-green-600 font-bold">+22%</span>', badge('RẤT TỐT', 'green')],
+                ])}
 </div>`,
 
-evaluate: () => `<div class="p-6 slide-up">
-    ${pageHeader('Đánh giá Năng lực Cá nhân','Bảng KPI & xếp loại cán bộ quý I/2025','Tạo kỳ ĐG','bar-chart-3')}
-    ${tableWrap(['Cán bộ','Đơn vị','Chuyên môn','Kỷ luật','Sáng kiến','Tổng điểm','Xếp loại'],
-    [
-        ['<span class="font-bold">Trần Văn Hùng</span>','Trạm Châu Cường','<span class="font-bold">92</span>','<span class="font-bold">95</span>','<span class="font-bold">85</span>','<span class="text-lg font-black text-green-600">90.7</span>',badge('XUẤT SẮC','green')],
-        ['<span class="font-bold">Hoàng Đức Minh</span>','Trạm Xiêng My','<span class="font-bold">88</span>','<span class="font-bold">90</span>','<span class="font-bold">80</span>','<span class="text-lg font-black text-green-600">86.0</span>',badge('TỐT','blue')],
-        ['<span class="font-bold">Nguyễn Thị An</span>','Văn phòng BQL','<span class="font-bold">85</span>','<span class="font-bold">92</span>','<span class="font-bold">75</span>','<span class="text-lg font-black text-blue-600">84.0</span>',badge('TỐT','blue')],
-        ['<span class="font-bold">Lê Thị Hoa</span>','Phòng KH-TC','<span class="font-bold">80</span>','<span class="font-bold">88</span>','<span class="font-bold">70</span>','<span class="text-lg font-black text-blue-600">79.3</span>',badge('KHÁ','amber')],
-    ])}
+            evaluate: () => `<div class="p-6 slide-up">
+    ${pageHeader('Đánh giá Năng lực Cá nhân', 'Bảng KPI & xếp loại cán bộ quý I/2025', 'Tạo kỳ ĐG', 'bar-chart-3')}
+    ${tableWrap(['Cán bộ', 'Đơn vị', 'Chuyên môn', 'Kỷ luật', 'Sáng kiến', 'Tổng điểm', 'Xếp loại'],
+                [
+                    ['<span class="font-bold">Trần Văn Hùng</span>', 'Trạm Châu Cường', '<span class="font-bold">92</span>', '<span class="font-bold">95</span>', '<span class="font-bold">85</span>', '<span class="text-lg font-black text-green-600">90.7</span>', badge('XUẤT SẮC', 'green')],
+                    ['<span class="font-bold">Hoàng Đức Minh</span>', 'Trạm Xiêng My', '<span class="font-bold">88</span>', '<span class="font-bold">90</span>', '<span class="font-bold">80</span>', '<span class="text-lg font-black text-green-600">86.0</span>', badge('TỐT', 'blue')],
+                    ['<span class="font-bold">Nguyễn Thị An</span>', 'Văn phòng BQL', '<span class="font-bold">85</span>', '<span class="font-bold">92</span>', '<span class="font-bold">75</span>', '<span class="text-lg font-black text-blue-600">84.0</span>', badge('TỐT', 'blue')],
+                    ['<span class="font-bold">Lê Thị Hoa</span>', 'Phòng KH-TC', '<span class="font-bold">80</span>', '<span class="font-bold">88</span>', '<span class="font-bold">70</span>', '<span class="text-lg font-black text-blue-600">79.3</span>', badge('KHÁ', 'amber')],
+                ])}
 </div>`,
 
-tourism: () => `<div class="p-6 slide-up">
-    ${pageHeader('Du lịch sinh thái & Giáo dục Môi trường','Quản lý đoàn tham quan, chương trình GDMT','Thêm đoàn','backpack')}
+            tourism: () => `<div class="p-6 slide-up">
+    ${pageHeader('Du lịch sinh thái & Giáo dục Môi trường', 'Quản lý đoàn tham quan, chương trình GDMT', 'Thêm đoàn', 'backpack')}
     <div class="grid lg:grid-cols-3 gap-4 mb-6">
-        ${statCard('users','Đoàn đã đón','34','đoàn/năm','bg-pink-50 text-pink-600')}
-        ${statCard('graduation-cap','Học sinh SV','1,280','lượt/năm','bg-indigo-50 text-indigo-600')}
-        ${statCard('wallet','Doanh thu','125M','VNĐ/năm','bg-green-50 text-green-600')}
+        ${statCard('users', 'Đoàn đã đón', '34', 'đoàn/năm', 'bg-pink-50 text-pink-600')}
+        ${statCard('graduation-cap', 'Học sinh SV', '1,280', 'lượt/năm', 'bg-indigo-50 text-indigo-600')}
+        ${statCard('wallet', 'Doanh thu', '125M', 'VNĐ/năm', 'bg-green-50 text-green-600')}
     </div>
-    ${tableWrap(['Đoàn','Đơn vị','Số lượng','Ngày','Tuyến','Trạng thái'],
-    [
-        ['<span class="font-bold">ĐH Vinh - K65 KHMT</span>','ĐH Vinh','45 SV + 3 GV','28/01/2025','Tuyến Khe Bu',badge('SẮP ĐẾN','blue')],
-        ['<span class="font-bold">THPT Quỳ Hợp</span>','Sở GD Nghệ An','60 HS + 4 GV','15/01/2025','Tuyến Châu Cường',badge('ĐÃ ĐÓN','green')],
-        ['<span class="font-bold">Nhóm NC Quốc tế</span>','WWF Vietnam','8 người','05/02/2025','Toàn khu',badge('ĐANG XÉT','amber')],
-    ])}
+    ${tableWrap(['Đoàn', 'Đơn vị', 'Số lượng', 'Ngày', 'Tuyến', 'Trạng thái'],
+                [
+                    ['<span class="font-bold">ĐH Vinh - K65 KHMT</span>', 'ĐH Vinh', '45 SV + 3 GV', '28/01/2025', 'Tuyến Khe Bu', badge('SẮP ĐẾN', 'blue')],
+                    ['<span class="font-bold">THPT Quỳ Hợp</span>', 'Sở GD Nghệ An', '60 HS + 4 GV', '15/01/2025', 'Tuyến Châu Cường', badge('ĐÃ ĐÓN', 'green')],
+                    ['<span class="font-bold">Nhóm NC Quốc tế</span>', 'WWF Vietnam', '8 người', '05/02/2025', 'Toàn khu', badge('ĐANG XÉT', 'amber')],
+                ])}
 </div>`,
 
-community: () => `<div class="p-6 slide-up">
-    ${pageHeader('Phát triển Vùng đệm & DVMTR','Chi trả dịch vụ môi trường rừng cho cộng đồng','Tạo đợt chi trả','home')}
+            community: () => `<div class="p-6 slide-up">
+    ${pageHeader('Phát triển Vùng đệm & DVMTR', 'Chi trả dịch vụ môi trường rừng cho cộng đồng', 'Tạo đợt chi trả', 'home')}
     <div class="grid lg:grid-cols-3 gap-4 mb-6">
-        ${statCard('home','Hộ hưởng lợi','1,245','hộ','bg-rose-50 text-rose-600')}
-        ${statCard('map-pin','Xã vùng đệm','09','xã','bg-blue-50 text-blue-600')}
-        ${statCard('banknote','Tổng chi trả','2.8B','VNĐ/năm','bg-green-50 text-green-600')}
+        ${statCard('home', 'Hộ hưởng lợi', '1,245', 'hộ', 'bg-rose-50 text-rose-600')}
+        ${statCard('map-pin', 'Xã vùng đệm', '09', 'xã', 'bg-blue-50 text-blue-600')}
+        ${statCard('banknote', 'Tổng chi trả', '2.8B', 'VNĐ/năm', 'bg-green-50 text-green-600')}
     </div>
-    ${tableWrap(['Xã','Huyện','Số hộ','Diện tích giao','DVMTR 2024','Trạng thái'],
-    [
-        ['<span class="font-bold">Bình Chuẩn</span>','Con Cuông','186 hộ','2,450 ha','<span class="font-bold text-green-600">420.000.000đ</span>',badge('ĐÃ CHI TRẢ','green')],
-        ['<span class="font-bold">Châu Cường</span>','Quỳ Hợp','145 hộ','1,820 ha','<span class="font-bold text-green-600">315.000.000đ</span>',badge('ĐÃ CHI TRẢ','green')],
-        ['<span class="font-bold">Xiêng My</span>','Tương Dương','210 hộ','3,100 ha','<span class="font-bold text-amber-600">520.000.000đ</span>',badge('ĐANG CHI TRẢ','amber')],
-        ['<span class="font-bold">Lục Dạ</span>','Con Cuông','168 hộ','2,680 ha','<span class="font-bold text-blue-600">450.000.000đ</span>',badge('CHỜ DUYỆT','blue')],
-        ['<span class="font-bold">Tam Hợp</span>','Tương Dương','132 hộ','1,950 ha','<span class="font-bold text-blue-600">340.000.000đ</span>',badge('CHỜ DUYỆT','blue')],
-    ])}
+    ${tableWrap(['Xã', 'Huyện', 'Số hộ', 'Diện tích giao', 'DVMTR 2024', 'Trạng thái'],
+                [
+                    ['<span class="font-bold">Bình Chuẩn</span>', 'Con Cuông', '186 hộ', '2,450 ha', '<span class="font-bold text-green-600">420.000.000đ</span>', badge('ĐÃ CHI TRẢ', 'green')],
+                    ['<span class="font-bold">Châu Cường</span>', 'Quỳ Hợp', '145 hộ', '1,820 ha', '<span class="font-bold text-green-600">315.000.000đ</span>', badge('ĐÃ CHI TRẢ', 'green')],
+                    ['<span class="font-bold">Xiêng My</span>', 'Tương Dương', '210 hộ', '3,100 ha', '<span class="font-bold text-amber-600">520.000.000đ</span>', badge('ĐANG CHI TRẢ', 'amber')],
+                    ['<span class="font-bold">Lục Dạ</span>', 'Con Cuông', '168 hộ', '2,680 ha', '<span class="font-bold text-blue-600">450.000.000đ</span>', badge('CHỜ DUYỆT', 'blue')],
+                    ['<span class="font-bold">Tam Hợp</span>', 'Tương Dương', '132 hộ', '1,950 ha', '<span class="font-bold text-blue-600">340.000.000đ</span>', badge('CHỜ DUYỆT', 'blue')],
+                ])}
 </div>`,
 
-news: () => `<div class="p-6 slide-up">
-    ${pageHeader('Tin tức & Thông báo Nội bộ','Bảng tin dành cho cán bộ BQL','Đăng tin','newspaper')}
+            news: () => `<div class="p-6 slide-up">
+    ${pageHeader('Tin tức & Thông báo Nội bộ', 'Bảng tin dành cho cán bộ BQL', 'Đăng tin', 'newspaper')}
     <div class="space-y-4">
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm feat-card">
             <div class="flex gap-4"><div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
-            <div class="flex-1"><div class="flex justify-between items-start"><h4 class="font-bold text-sm">KHẨN: Tăng cường PCCCR mùa khô 2025</h4>${badge('QUAN TRỌNG','red')}</div><p class="text-xs text-gray-500 mt-1">Yêu cầu tất cả các trạm kiểm lâm tăng cường tuần tra 24/7. Cấm lửa tuyệt đối trong phân khu bảo vệ nghiêm ngặt.</p><p class="text-[10px] text-gray-400 mt-2">Ban Giám đốc | 24/01/2025</p></div></div>
+            <div class="flex-1"><div class="flex justify-between items-start"><h4 class="font-bold text-sm">KHẨN: Tăng cường PCCCR mùa khô 2025</h4>${badge('QUAN TRỌNG', 'red')}</div><p class="text-xs text-gray-500 mt-1">Yêu cầu tất cả các trạm kiểm lâm tăng cường tuần tra 24/7. Cấm lửa tuyệt đối trong phân khu bảo vệ nghiêm ngặt.</p><p class="text-[10px] text-gray-400 mt-2">Ban Giám đốc | 24/01/2025</p></div></div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm feat-card">
             <div class="flex gap-4"><div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="info" class="w-5 h-5"></i></div>
@@ -628,20 +1059,20 @@ news: () => `<div class="p-6 slide-up">
     </div>
 </div>`,
 
-permission: () => `<div class="p-6 slide-up">
-    ${pageHeader('Phân quyền Hệ thống','Quản lý vai trò và quyền truy cập','Thêm vai trò','shield')}
-    ${tableWrap(['Vai trò','Mô tả','Số người','Quyền hạn','Trạng thái'],
-    [
-        ['<span class="font-bold text-red-600">Super Admin</span>','Toàn quyền hệ thống','1',badge('TẤT CẢ','red'),badge('ACTIVE','green')],
-        ['<span class="font-bold text-purple-600">Ban Giám đốc</span>','Phê duyệt, báo cáo tổng hợp','3','Xem, Duyệt, Báo cáo',badge('ACTIVE','green')],
-        ['<span class="font-bold text-blue-600">Trưởng phòng</span>','Quản lý phòng ban','6','Xem, Thêm, Sửa',badge('ACTIVE','green')],
-        ['<span class="font-bold text-green-600">Trạm trưởng</span>','Quản lý trạm kiểm lâm','8','Trạm, Tuần tra, Báo cáo',badge('ACTIVE','green')],
-        ['<span class="font-bold text-slate-600">Kiểm lâm viên</span>','Nhập liệu tuần tra','68','Tuần tra, Xem',badge('ACTIVE','green')],
-        ['<span class="font-bold text-gray-600">Nhân viên VP</span>','Xử lý hành chính','38','Công văn, Kho, Bếp',badge('ACTIVE','green')],
-    ])}
+            permission: () => `<div class="p-6 slide-up">
+    ${pageHeader('Phân quyền Hệ thống', 'Quản lý vai trò và quyền truy cập', 'Thêm vai trò', 'shield')}
+    ${tableWrap(['Vai trò', 'Mô tả', 'Số người', 'Quyền hạn', 'Trạng thái'],
+                [
+                    ['<span class="font-bold text-red-600">Super Admin</span>', 'Toàn quyền hệ thống', '1', badge('TẤT CẢ', 'red'), badge('ACTIVE', 'green')],
+                    ['<span class="font-bold text-purple-600">Ban Giám đốc</span>', 'Phê duyệt, báo cáo tổng hợp', '3', 'Xem, Duyệt, Báo cáo', badge('ACTIVE', 'green')],
+                    ['<span class="font-bold text-blue-600">Trưởng phòng</span>', 'Quản lý phòng ban', '6', 'Xem, Thêm, Sửa', badge('ACTIVE', 'green')],
+                    ['<span class="font-bold text-green-600">Trạm trưởng</span>', 'Quản lý trạm kiểm lâm', '8', 'Trạm, Tuần tra, Báo cáo', badge('ACTIVE', 'green')],
+                    ['<span class="font-bold text-slate-600">Kiểm lâm viên</span>', 'Nhập liệu tuần tra', '68', 'Tuần tra, Xem', badge('ACTIVE', 'green')],
+                    ['<span class="font-bold text-gray-600">Nhân viên VP</span>', 'Xử lý hành chính', '38', 'Công văn, Kho, Bếp', badge('ACTIVE', 'green')],
+                ])}
 </div>`,
 
-ai: () => `<div class="p-6 slide-up flex flex-col" style="height:calc(100vh - 64px)">
+            ai: () => `<div class="p-6 slide-up flex flex-col" style="height:calc(100vh - 64px)">
     <div class="flex items-center gap-3 mb-6 shrink-0">
         <div class="w-12 h-12 bg-green-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-200"><i data-lucide="bot" class="w-7 h-7"></i></div>
         <div><h3 class="font-bold text-lg">Trợ lý AI Pù Huống</h3><p class="text-xs text-gray-500">Tra cứu Luật Lâm nghiệp, Nghị định, Thông tư & Quy chế nội bộ</p></div>
@@ -663,44 +1094,50 @@ ai: () => `<div class="p-6 slide-up flex flex-col" style="height:calc(100vh - 64
         <button onclick="simulateChat()" class="bg-green-600 text-white w-10 h-10 rounded-xl flex items-center justify-center hover:bg-green-700 shadow-lg shadow-green-100"><i data-lucide="send" class="w-4 h-4"></i></button>
     </div>
 </div>`,
-};
-
-// ========== NAVIGATION ==========
-function switchMain(tab){
-    const r=document.getElementById('sec-report'),d=document.getElementById('sec-demo'),
-          rb=document.getElementById('tab-report'),db=document.getElementById('tab-demo'),
-          f=document.getElementById('global-footer');
-    if(tab==='report'){r.classList.remove('hidden');d.classList.add('hidden');rb.classList.add('tab-active');rb.classList.remove('text-gray-400');db.classList.remove('tab-active');db.classList.add('text-gray-400');f.classList.remove('hidden')}
-    else{r.classList.add('hidden');d.classList.remove('hidden');db.classList.add('tab-active');db.classList.remove('text-gray-400');rb.classList.remove('tab-active');rb.classList.add('text-gray-400');f.classList.add('hidden');if(!document.getElementById('demo-main').innerHTML)showTab('dashboard',document.querySelector('.sidebar-item.active'))}
-    lucide.createIcons();
-}
-
-function showTab(id,el){
-    document.querySelectorAll('.sidebar-item').forEach(e=>e.classList.remove('active'));
-    if(el)el.classList.add('active');
-    const main=document.getElementById('demo-main');
-    main.innerHTML = PAGES[id] ? PAGES[id]() : `<div class="p-12 flex flex-col items-center justify-center text-gray-400 h-full"><i data-lucide="construction" class="w-12 h-12 mb-3 float"></i><h4 class="font-bold text-lg text-slate-800">Module đang phát triển</h4><p class="text-center max-w-sm mt-1 text-sm">Tính năng <strong>${id}</strong> sẽ được hoàn thiện trong giai đoạn tiếp theo.</p></div>`;
-    main.scrollTop=0;
-    lucide.createIcons();
-}
-
-function simulateChat(){
-    const input=document.getElementById('chat-input'),box=document.getElementById('chat-box');
-    if(!input||!input.value.trim())return;
-    const q=input.value.trim();
-    box.innerHTML+=`<div class="flex gap-3"><div class="w-9 h-9 bg-slate-100 text-slate-400 rounded-xl shrink-0 flex items-center justify-center font-bold text-[10px]">USER</div><div class="bg-slate-50 p-4 rounded-2xl rounded-tl-none text-sm border border-gray-100 max-w-[80%]">${q}</div></div>`;
-    input.value='';box.scrollTop=box.scrollHeight;
-    setTimeout(()=>{
-        const answers = {
-            'default': `Hệ thống AI Pù Huống đã tiếp nhận câu hỏi. Dựa trên <strong>320+ văn bản pháp luật</strong> đã được nạp vào hệ thống, tôi sẽ tra cứu và phản hồi chi tiết. Vui lòng đợi trong giây lát...`,
         };
-        box.innerHTML+=`<div class="flex gap-3 flex-row-reverse"><div class="w-9 h-9 bg-green-600 text-white rounded-xl shrink-0 flex items-center justify-center font-bold text-[10px] shadow">AI</div><div class="bg-green-50 p-4 rounded-2xl rounded-tr-none text-sm border border-green-100 max-w-[80%] leading-relaxed">${answers['default']}</div></div>`;
-        box.scrollTop=box.scrollHeight;lucide.createIcons();
-    },800);
-}
 
-// Init
-lucide.createIcons();
-</script>
+        // ========== NAVIGATION ==========
+        function switchMain(tab) {
+            const r = document.getElementById('sec-report'), d = document.getElementById('sec-demo'),
+                rb = document.getElementById('tab-report'), db = document.getElementById('tab-demo'),
+                f = document.getElementById('global-footer');
+            if (tab === 'report') { r.classList.remove('hidden'); d.classList.add('hidden'); rb.classList.add('tab-active'); rb.classList.remove('text-gray-400'); db.classList.remove('tab-active'); db.classList.add('text-gray-400'); f.classList.remove('hidden') }
+            else { r.classList.add('hidden'); d.classList.remove('hidden'); db.classList.add('tab-active'); db.classList.remove('text-gray-400'); rb.classList.remove('tab-active'); rb.classList.add('text-gray-400'); f.classList.add('hidden'); if (!document.getElementById('demo-main').innerHTML) showTab('dashboard', document.querySelector('.sidebar-item.active')) }
+            lucide.createIcons();
+        }
+
+        function showTab(id, el) {
+            document.querySelectorAll('.sidebar-item').forEach(e => e.classList.remove('active'));
+            if (el) el.classList.add('active');
+            const main = document.getElementById('demo-main');
+            main.innerHTML = PAGES[id] ? PAGES[id]() : `<div class="p-12 flex flex-col items-center justify-center text-gray-400 h-full"><i data-lucide="construction" class="w-12 h-12 mb-3 float"></i><h4 class="font-bold text-lg text-slate-800">Module đang phát triển</h4><p class="text-center max-w-sm mt-1 text-sm">Tính năng <strong>${id}</strong> sẽ được hoàn thiện trong giai đoạn tiếp theo.</p></div>`;
+            main.scrollTop = 0;
+            lucide.createIcons();
+            // Mobile: update title bar & close sidebar
+            const curMod = MODULES.find(m => m.id === id);
+            const titleEl = document.getElementById('mobile-current-page');
+            if (titleEl && curMod) titleEl.textContent = curMod.name;
+            closeSidebar();
+        }
+
+        function simulateChat() {
+            const input = document.getElementById('chat-input'), box = document.getElementById('chat-box');
+            if (!input || !input.value.trim()) return;
+            const q = input.value.trim();
+            box.innerHTML += `<div class="flex gap-3"><div class="w-9 h-9 bg-slate-100 text-slate-400 rounded-xl shrink-0 flex items-center justify-center font-bold text-[10px]">USER</div><div class="bg-slate-50 p-4 rounded-2xl rounded-tl-none text-sm border border-gray-100 max-w-[80%]">${q}</div></div>`;
+            input.value = ''; box.scrollTop = box.scrollHeight;
+            setTimeout(() => {
+                const answers = {
+                    'default': `Hệ thống AI Pù Huống đã tiếp nhận câu hỏi. Dựa trên <strong>320+ văn bản pháp luật</strong> đã được nạp vào hệ thống, tôi sẽ tra cứu và phản hồi chi tiết. Vui lòng đợi trong giây lát...`,
+                };
+                box.innerHTML += `<div class="flex gap-3 flex-row-reverse"><div class="w-9 h-9 bg-green-600 text-white rounded-xl shrink-0 flex items-center justify-center font-bold text-[10px] shadow">AI</div><div class="bg-green-50 p-4 rounded-2xl rounded-tr-none text-sm border border-green-100 max-w-[80%] leading-relaxed">${answers['default']}</div></div>`;
+                box.scrollTop = box.scrollHeight; lucide.createIcons();
+            }, 800);
+        }
+
+        // Init
+        lucide.createIcons();
+    </script>
 </body>
+
 </html>
