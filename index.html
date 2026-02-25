@@ -11,7 +11,7 @@
         body{font-family:'Inter',sans-serif;scroll-behavior:smooth}
         .tab-active{border-bottom:3px solid #16a34a;color:#16a34a;font-weight:700}
         .forest-grad{background:linear-gradient(135deg,#16a34a 0%,#065f46 100%)}
-        .dark-grad{background:linear-gradient(135deg,#0f172a 0%,#1e3a2f 100%)}
+        .dark-grad{background:linear-gradient(160deg,#064e3b 0%,#065f46 30%,#166534 60%,#15803d 100%)}
         .sidebar-item{transition:all .2s;cursor:pointer}
         .sidebar-item:hover{background:#f0fdf4;color:#16a34a;transform:translateX(4px)}
         .sidebar-item.active{background:#16a34a;color:#fff;box-shadow:0 4px 12px rgba(22,163,74,.25)}
@@ -62,29 +62,32 @@
 
 <!-- HERO -->
 <section class="dark-grad text-white relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1600" class="w-full h-full object-cover">
+    <!-- Ảnh rừng xanh tươi nền -->
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1600" class="w-full h-full object-cover opacity-40">
+        <!-- Overlay xanh lá nhẹ để cây cối xanh tươi -->
+        <div class="absolute inset-0" style="background:linear-gradient(160deg,rgba(6,78,59,0.72) 0%,rgba(22,101,52,0.55) 50%,rgba(21,128,61,0.45) 100%)"></div>
     </div>
     <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
-        <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6 text-xs font-semibold backdrop-blur-sm">
-            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> Dự án đang triển khai 2025
+        <div class="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 mb-6 text-xs font-semibold backdrop-blur-sm">
+            <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span> Dự án đang triển khai 2025
         </div>
-        <h2 class="text-3xl md:text-5xl font-black mb-6 leading-tight max-w-3xl">Số hóa toàn diện<br>công tác quản lý<br><span class="text-green-400">Khu Bảo Tồn Thiên Nhiên Pù Huống</span></h2>
-        <p class="text-green-100/80 max-w-2xl leading-relaxed mb-8">
+        <h2 class="text-3xl md:text-5xl font-black mb-6 leading-tight max-w-3xl">Số hóa toàn diện<br>công tác quản lý<br><span class="text-green-300">Khu Bảo Tồn Thiên Nhiên Pù Huống</span></h2>
+        <p class="text-green-100/90 max-w-2xl leading-relaxed mb-8">
             Xây dựng hệ thống quản trị hồ sơ tập trung, kết hợp công nghệ GIS, AI và SMART Patrol để hiện đại hóa toàn bộ công tác lâm sinh, hành chính và bảo tồn đa dạng sinh học tại Pù Huống, Nghệ An.
         </p>
         <div class="flex flex-wrap gap-3">
-            <div class="bg-white/10 backdrop-blur border border-white/10 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-400">40,128</p><p class="text-[10px] text-green-200/60 uppercase tracking-wider">Ha diện tích</p>
+            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                <p class="text-2xl font-black text-green-300">40,128</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Ha diện tích</p>
             </div>
-            <div class="bg-white/10 backdrop-blur border border-white/10 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-400">19+</p><p class="text-[10px] text-green-200/60 uppercase tracking-wider">Module phần mềm</p>
+            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                <p class="text-2xl font-black text-green-300">19+</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Module phần mềm</p>
             </div>
-            <div class="bg-white/10 backdrop-blur border border-white/10 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-400">124</p><p class="text-[10px] text-green-200/60 uppercase tracking-wider">Cán bộ CNV</p>
+            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                <p class="text-2xl font-black text-green-300">124</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Cán bộ CNV</p>
             </div>
-            <div class="bg-white/10 backdrop-blur border border-white/10 rounded-2xl px-5 py-3 text-center">
-                <p class="text-2xl font-black text-green-400">AI</p><p class="text-[10px] text-green-200/60 uppercase tracking-wider">Tích hợp trợ lý</p>
+            <div class="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-center">
+                <p class="text-2xl font-black text-green-300">AI</p><p class="text-[10px] text-green-100/80 uppercase tracking-wider">Tích hợp trợ lý</p>
             </div>
         </div>
     </div>
