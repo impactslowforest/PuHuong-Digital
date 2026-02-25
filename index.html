@@ -1234,7 +1234,7 @@
         async function reloadGISLayer() {
             if (!_gisMap) await initGISMap();
 
-            const VPS = 'http://36.50.26.99:8097';
+            const GIS_BASE = '/gis-data'; // same-origin, no CORS issues
             const statusEl = document.getElementById('gis-status');
             const loadingEl = document.getElementById('gis-loading');
 
@@ -1245,7 +1245,8 @@
             try {
                 // 1. Load color map
                 if (!_gisColors) {
-                    const r = await fetch(VPS + '/ldlr-colors.json');
+                    const r = await fetch(GIS_BASE + '/ldlr-colors.json');
+                    if (!r.ok) throw new Error('Màu: HTTP ' + r.status);
                     _gisColors = await r.json();
                 }
 
@@ -1253,7 +1254,8 @@
                 statusEl.innerHTML = '<span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse inline-block"></span> Đang tải GeoJSON (87 MB)...';
                 document.getElementById('gis-load-pct').textContent = 'Đang tải, vui lòng chờ...';
 
-                const resp = await fetch(VPS + '/PuHuong-GIS-web.geojson');
+                const resp = await fetch(GIS_BASE + '/PuHuong-GIS-web.geojson');
+                if (!resp.ok) throw new Error('GeoJSON: HTTP ' + resp.status);
                 const total = parseInt(resp.headers.get('Content-Length') || '0');
                 const reader = resp.body.getReader();
                 let received = 0, chunks = [];
@@ -1267,7 +1269,9 @@
                         document.getElementById('gis-load-pct').textContent = `${pct}% — ${(received / 1048576).toFixed(0)}/${(total / 1048576).toFixed(0)} MB`;
                     }
                 }
-                const text = new TextDecoder().decode(new Uint8Array(chunks.reduce((a, c) => [...a, ...c], [])));
+                // Fix: Use Blob.text() to concat Uint8Arrays (memory-safe)
+                const blob = new Blob(chunks);
+                const text = await blob.text();
                 const geojson = JSON.parse(text);
 
                 // 3. Remove old layer
